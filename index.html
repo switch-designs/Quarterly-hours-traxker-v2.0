@@ -1,0 +1,1160 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quarter Hours Tracker v2.0</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef2f6;color:#18212b;font-family:Arial,sans-serif}
+header{background:linear-gradient(135deg,#17212b,#31556f);color:white;text-align:center;padding:25px 15px}
+h1{margin:0 0 5px;font-size:28px}header p{margin:0;opacity:.82;font-size:13px}
+.tabs{max-width:940px;margin:18px auto 0;padding:0 12px;display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.tabs button{border:0;border-radius:9px 9px 0 0;padding:13px 7px;font-weight:700;background:#d9dfe5;cursor:pointer}.tabs button.active{background:#fff}
+main{max-width:940px;margin:0 auto 30px;background:#fff;padding:20px;border-radius:0 0 12px 12px;box-shadow:0 5px 22px #0001}
+.panel{display:none}.panel.active{display:block}h2{margin-top:0}h3{margin-top:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{border:1px solid #dfe5ea;border-radius:11px;padding:16px;margin-top:14px}
+label{display:block;font-weight:700;font-size:13px;margin-bottom:7px}input,select{width:100%;padding:12px;border:1px solid #bac4ce;border-radius:8px;font-size:16px;background:#fff}
+button{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.primary{background:#1769aa;color:#fff}.danger{background:#b42318;color:#fff}
+.full{width:100%;margin-top:10px}.small{padding:8px 12px;margin-top:7px}
+.notice{background:#f4f7fa;border:1px solid #e0e5ea;border-radius:9px;padding:12px;margin:14px 0;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.stat{border:1px solid #e0e5ea;border-radius:9px;padding:13px;background:#fafbfc}
+.stat b{display:block;font-size:21px;margin-top:5px}.over{color:#b42318}.under{color:#167647}
+.pto-row{display:grid;grid-template-columns:1fr 150px auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #e7ebee}
+.pto-row label{margin:0}table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}th,td{padding:10px;border-bottom:1px solid #e5e9ed;text-align:left}th{background:#f5f7f9}
+@media(max-width:700px){.grid,.stats{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(2,1fr)}.pto-row{grid-template-columns:1fr}}
+.money{font-weight:400;display:block;margin-top:4px}.log-location{font-weight:700;margin-bottom:5px}.modal-backdrop{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:9999}.modal-backdrop.show{display:flex}.password-modal{width:min(360px,100%);background:#fff;border-radius:12px;padding:20px;box-shadow:0 12px 40px #0005}.password-modal h3{margin:0 0 12px}.password-modal input{font-size:22px;text-align:center;letter-spacing:5px}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.register-screen{position:fixed;inset:0;background:#eef2f6;z-index:20000;overflow:auto;padding:18px}.register-box{max-width:720px;margin:20px auto;background:#fff;border-radius:14px;padding:22px;box-shadow:0 8px 30px #0002}.register-box h1{color:#18212b;margin:0 0 5px}.register-box .sub{color:#5c6772;margin:0 0 18px}.reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.reg-location{border:1px solid #dfe5ea;border-radius:10px;padding:14px;margin-top:12px}.reg-location h3{margin:0 0 10px}.reg-employee{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:7px}@media(max-width:700px){.reg-grid{grid-template-columns:1fr}}
+
+.register-screen input,.register-screen select,.register-screen button{position:relative;z-index:20002;pointer-events:auto}
+.register-screen .register-box{position:relative;z-index:20001}
+<style>
+#registrationLocations{display:block!important;visibility:visible!important}
+#registrationLocations .reg-location{display:block!important;visibility:visible!important}
+#registrationLocations input{pointer-events:auto!important;user-select:text!important;-webkit-user-select:text!important}
+</style></style></head><body><div id="registerScreen" class="register-screen" style="display:flex"><div class="register-box"><h1>Register Admin</h1><p class="sub">First-time setup for this phone. Register the administrator before using the tracker.</p><div class="card"><label>Administrator Name</label><input id="regAdminName" type="text" autocomplete="name" placeholder="Enter administrator name"><div class="reg-grid" style="margin-top:12px"><div><label>Create Admin Password</label><input id="regAdminPassword" type="password" inputmode="numeric" maxlength="20" placeholder="Create a password"></div><div><label>Confirm Admin Password</label><input id="regAdminPassword2" type="password" inputmode="numeric" maxlength="20" placeholder="Confirm password"></div></div></div><div class="card"><label>Personal Hours Allowed Per Quarter</label><input id="regPersonalQuarterHours" type="number" min="0" step="any" value="585" placeholder="Example: 585"><small>Used for the Personal tab quarter target. Entries are still allowed above the target.</small></div><div class="card"><label>Number of Locations</label><select id="regLocationCount" onchange="renderRegistrationLocations()" oninput="renderRegistrationLocations()"><option value="1">1 Location</option><option value="2">2 Locations</option><option value="3">3 Locations</option><option value="4">4 Locations</option><option value="5">5 Locations</option><option value="6">6 Locations</option><option value="7">7 Locations</option><option value="8">8 Locations</option><option value="9">9 Locations</option><option value="10">10 Locations</option></select></div><div id="registrationLocations"><div class="reg-location"><h3>Location 1</h3><label>Location Number / Name</label><input class="regLocName" type="text" placeholder="Example: W22" autocomplete="off"><label>Employees / Assistants allowed for PTO</label><div class="regEmployees"><div class="reg-employee-row"><input class="regEmpName" type="text" placeholder="Employee / Assistant name" autocomplete="off"><button type="button" class="danger remove-reg-employee">Remove</button></div></div><button type="button" class="secondary add-reg-employee" style="margin-top:8px">+ Add Employee / Assistant</button></div></div><button class="primary full" onclick="completeRegistration()">Register Admin &amp; Add Assistants</button><button type="button" class="danger full" onclick="resetV2TestData()" style="margin-top:8px">Reset v2.0 Test Data</button></div></div>
+<header><h1>Quarter Hours Tracker <small style="font-size:.45em;font-weight:600;opacity:.8;">v2.0</small></h1><p id="quarterLabel">Quarter 3: July 4, 2026 – October 2, 2026</p></header>
+<div class="card" style="max-width:940px;margin:14px auto 0;padding:12px 20px">
+<label>Quarter</label>
+<select id="quarterSelect" onchange="switchQuarter(this.value)">
+<option value="q3">Quarter 3 — July 4, 2026 – October 2, 2026</option>
+<option value="q4">Quarter 4 — October 3, 2026 – December 31, 2026</option>
+</select>
+</div>
+<div class="tabs"><button class="active" onclick="tab('w17',this)">W17</button><button onclick="tab('w39',this)">W39</button><button onclick="tab('personal',this)">Personal</button><button onclick="tab('log',this)">Log</button></div>
+<div id="passwordModal" class="modal-backdrop" aria-hidden="true">
+<div class="password-modal">
+<h3>Password Required</h3>
+<input id="passwordInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="20" autocomplete="off" aria-label="Password">
+<div class="modal-actions"><button type="button" onclick="closePassword(false)">Cancel</button><button type="button" class="primary" onclick="closePassword(true)">Continue</button></div>
+</div></div>
+<input id="restoreFile" type="file" accept="application/json,.json,text/plain,*/*" style="display:none" onchange="handleRestoreFile(event)">
+<main>
+
+<section id="w17" class="panel">
+<h2>W17 Hours</h2>
+<div class="grid">
+<div class="card"><label>Pay Period</label><select id="w17period"></select></div>
+<div class="card">
+<label>Hours to add</label><input id="w17hours" type="number" step="any" placeholder="Enter any number">
+<h3>PTO Hours</h3><div class="pto-row"><label>Daily Roberts PTO hours</label><input id="w17pto_0" type="number" step="any" placeholder="PTO"></div><div class="pto-row"><label>Ray Young PTO hours</label><input id="w17pto_1" type="number" step="any" placeholder="PTO"></div>
+<button class="primary full" onclick="submitLocation('w17')">Submit Hours + PTO</button>
+<button class="danger full" onclick="clearSelected('w17')">Clear Selected Period</button>
+</div></div>
+<div class="notice"><b>Tracking only:</b> 75 weekly, 150 biweekly, and 975 quarterly. Entries are never rejected for going over. Assistant PTO is deducted from regular hours counted.</div>
+<div id="w17stats"></div><div id="w17log"></div>
+</section>
+
+<section id="w39" class="panel">
+<h2>W39 Hours</h2>
+<div class="grid">
+<div class="card"><label>Pay Period</label><select id="w39period"></select></div>
+<div class="card">
+<label>Hours to add</label><input id="w39hours" type="number" step="any" placeholder="Enter any number">
+<h3>PTO Hours</h3><div class="pto-row"><label>Daily Roberts PTO hours</label><input id="w39pto_0" type="number" step="any" placeholder="PTO"></div><div class="pto-row"><label>Amari Jordan PTO hours</label><input id="w39pto_1" type="number" step="any" placeholder="PTO"></div>
+<button class="primary full" onclick="submitLocation('w39')">Submit Hours + PTO</button>
+<button class="danger full" onclick="clearSelected('w39')">Clear Selected Period</button>
+</div></div>
+<div class="notice"><b>Tracking only:</b> 75 weekly, 150 biweekly, and 975 quarterly. Entries are never rejected for going over. Assistant PTO is deducted from regular hours counted.</div>
+<div id="w39stats"></div><div id="w39log"></div>
+</section>
+<section id="personal" class="panel"><h2>Personal Hours — ${esc(getRegistration()?.adminName||'Administrator')}</h2><div class="card"><label>Pay Period</label><select id="personalperiod"></select></div><div class="card"><div class="notice">Personal target: <b>585 hours</b>. Password 4187 is required to add or clear entries.</div>
+<label>${esc(getRegistration()?.adminName||'Administrator')} Hours to add</label><input id="personalhours" type="number" step="any" placeholder="Enter any number"><h3>PTO Hours</h3><input id="personalpto" type="number" step="any" placeholder="Enter PTO hours"><button class="primary" onclick="addPersonal()">Submit Hours + PTO</button></div><div id="personalStats"></div><div id="personalLog"></div></section>
+<section id="log" class="panel"><h2>Complete Log — By Location</h2>
+<div class="card"><h3>Backup & Restore</h3><div class="notice">Backup saves all configured 2026 and 2027 quarter data. Restore replaces the tracker data with the selected backup.</div>
+<button class="primary full" onclick="backupData()">Backup Data</button>
+<button class="full" onclick="restoreData()">Restore Data</button></div>
+<div id="allLog"></div></section>
+</main>
+<script>
+const REG_KEY='QuarterHoursTracker_registration_v1';
+function readLimitValue(value,fallback){const n=Number(value);return value!==undefined&&value!==null&&String(value).trim()!==''&&Number.isFinite(n)&&n>=0?n:fallback;}
+function readLimit(input,fallback){return readLimitValue(input?input.value:undefined,fallback);}
+function registrationExists(){try{const r=JSON.parse(localStorage.getItem(REG_KEY)||'null');return !!(r&&r.adminName&&r.adminPassword&&Array.isArray(r.locations)&&r.locations.length)}catch(e){return false}}
+function renderRegistrationLocations(){
+  const countEl=document.getElementById('regLocationCount');
+  const w=document.getElementById('registrationLocations');
+  if(!countEl||!w)return;
+  const n=Math.min(10,Math.max(1,parseInt(countEl.value,10)||1));
+  w.replaceChildren();
+
+  for(let i=0;i<n;i++){
+    const box=document.createElement('div');
+    box.className='reg-location';
+    box.style.position='relative';
+    box.style.zIndex='1';
+
+    const title=document.createElement('h3');
+    title.textContent='Location '+(i+1);
+    box.appendChild(title);
+
+    const label=document.createElement('label');
+    label.textContent='Location Number';
+    box.appendChild(label);
+
+    const locInput=document.createElement('input');
+    locInput.className='regLocName';
+    locInput.type='text';
+    locInput.placeholder='Example: W22';
+    locInput.autocomplete='off';
+    locInput.disabled=false;
+    locInput.readOnly=false;
+    locInput.style.pointerEvents='auto';
+    locInput.style.position='relative';
+    locInput.style.zIndex='2';
+    locInput.addEventListener('click',e=>e.stopPropagation());
+    locInput.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+    box.appendChild(locInput);
+
+    const limits=document.createElement('div');
+    limits.className='reg-location-limits';
+    limits.style.display='grid';
+    limits.style.gridTemplateColumns='repeat(auto-fit,minmax(130px,1fr))';
+    limits.style.gap='8px';
+    limits.style.marginTop='10px';
+    limits.innerHTML=`<div><label>Hours Allowed / Week</label><input class="regWeeklyLimit" type="number" min="0" step="any" value="75" placeholder="75"></div><div><label>Hours Allowed / Biweekly</label><input class="regBiweeklyLimit" type="number" min="0" step="any" value="150" placeholder="150"></div><div><label>Hours Allowed / Quarter</label><input class="regQuarterlyLimit" type="number" min="0" step="any" value="975" placeholder="975"></div>`;
+    box.appendChild(limits);
+
+    const alabel=document.createElement('label');
+    alabel.textContent='Assistant Names (PTO employees)';
+    alabel.style.marginTop='10px';
+    box.appendChild(alabel);
+
+    const list=document.createElement('div');
+    list.className='regEmployees';
+    box.appendChild(list);
+
+    const addEmployee=()=>{
+      const row=document.createElement('div');
+      row.className='reg-employee-row';
+      row.style.display='grid';
+      row.style.gridTemplateColumns='1fr auto';
+      row.style.gap='7px';
+      row.style.marginTop='7px';
+
+      const emp=document.createElement('input');
+      emp.className='regEmpName';
+      emp.type='text';
+      emp.placeholder='Employee name';
+      emp.autocomplete='off';
+      emp.disabled=false;
+      emp.readOnly=false;
+      emp.style.pointerEvents='auto';
+      emp.style.position='relative';
+      emp.style.zIndex='2';
+      emp.addEventListener('click',e=>e.stopPropagation());
+      emp.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+
+      const remove=document.createElement('button');
+      remove.type='button';
+      remove.textContent='Remove';
+      remove.onclick=()=>row.remove();
+
+      row.appendChild(emp);
+      row.appendChild(remove);
+      list.appendChild(row);
+    };
+
+    const add=document.createElement('button');
+    add.type='button';
+    add.className='secondary';
+    add.textContent='+ Add Employee';
+    add.style.marginTop='8px';
+    add.onclick=addEmployee;
+    box.appendChild(add);
+
+    // Put one assistant field in place immediately, as shown in the original design.
+    addEmployee();
+    w.appendChild(box);
+  }
+}
+function addRegistrationEmployee(btn){const l=btn.parentElement.querySelector('.employee-list'),r=document.createElement('div');r.className='reg-employee';r.innerHTML='<input class="regEmpName" type="text" placeholder="Employee name"><button type="button" onclick="this.parentElement.remove()">Remove</button>';l.appendChild(r)}
+function showRegistration(){
+  const screen=document.getElementById('registerScreen');
+  if(screen)screen.style.display='flex';
+  document.body.style.overflow='hidden';
+  renderRegistrationLocations();
+}
+function forceRegistrationLocationRefresh(){
+  const select=document.getElementById('regLocationCount');
+  if(!select)return;
+  renderRegistrationLocations();
+  setTimeout(renderRegistrationLocations,50);
+  setTimeout(renderRegistrationLocations,250);
+}
+function setupRegistrationForm(){
+  const count=document.getElementById('regLocationCount');
+  if(count){
+    count.onchange=forceRegistrationLocationRefresh;
+    count.oninput=forceRegistrationLocationRefresh;
+  }
+  forceRegistrationLocationRefresh();
+}
+
+function hideRegistration(){document.getElementById('registerScreen').style.display='none';document.body.style.overflow=''}
+function getRegistration(){try{return JSON.parse(localStorage.getItem(REG_KEY)||'null')}catch(e){return null}}
+function applyRegistrationToTracker(){const r=getRegistration();if(!r)return;document.querySelector('header h1').innerHTML='Quarter Hours Tracker <small style="font-size:.5em;font-weight:600;opacity:.8">v2.0</small>';document.querySelectorAll('#w17 h2,#w39 h2').forEach((el,i)=>{const loc=r.locations[i];if(loc)el.textContent=(loc.name||('Location '+(i+1)))+' Hours'});const locs=r.locations;for(let i=0;i<2;i++){const loc=locs[i];if(!loc)continue;const section=document.getElementById(i===0?'w17':'w39');const rows=section.querySelectorAll('.pto-row');const box=rows[0]?.parentElement;if(!box)continue;rows.forEach(x=>x.remove());loc.ptoEmployees.forEach((emp,j)=>{const row=document.createElement('div');row.className='pto-row';row.innerHTML='<label>'+esc(emp)+' PTO hours</label><input id="'+(i===0?'w17':'w39')+'pto_'+j+'" type="number" step="any" placeholder="PTO">';box.insertBefore(row,box.querySelector('button'));});}}
+
+function resetV2TestData(){if(!confirm('Delete all v2.0 test data and registration on this preview? Restore 2 is not affected.'))return;localStorage.clear();location.reload();}
+const KEY='quarterHoursTracker_v4',QUARTER_KEY='quarterHoursTracker_quarters_v1',PW='4187',RATE=15;
+function makeQuarter(year, q){
+  const startMonth=(q-1)*3;
+  const startDate=new Date(year,startMonth,1);
+  const endDate=new Date(year,startMonth+3,0);
+  const pad=n=>String(n).padStart(2,'0');
+  const fmtDate=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const fmtLabel=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const weeks=[];
+  let cur=new Date(startDate);
+  let weekNo=1;
+  while(cur<=endDate){
+    const ws=new Date(cur);
+    const we=new Date(cur);
+    we.setDate(we.getDate()+6);
+    if(we>endDate) we.setTime(endDate.getTime());
+    weeks.push(`Week ${weekNo} — ${fmtLabel(ws)} – ${fmtLabel(we)}`);
+    cur=new Date(we);
+    cur.setDate(cur.getDate()+1);
+    weekNo++;
+  }
+  const personal=[weeks[0]];
+  for(let i=1;i<weeks.length;i+=2){
+    const ps=new Date(startDate);
+    ps.setDate(ps.getDate()+7*i);
+    const pe=new Date(ps);
+    pe.setDate(pe.getDate()+13);
+    if(pe>endDate) pe.setTime(endDate.getTime());
+    personal.push(`Biweekly ${personal.length} — ${fmtLabel(ps)} – ${fmtLabel(pe)}`);
+  }
+  return {
+    label:`Quarter ${q}: ${fmtLabel(startDate)} – ${fmtLabel(endDate)}`,
+    weeks,
+    personal
+  };
+}
+
+
+// Q3/Q4 2026 use the user's quarter schedule: Q4 begins October 3.
+function makeScheduledQ4_2026(){
+  const weeks=[
+    'Week 1 — Oct 3 – Oct 9, 2026',
+    'Week 2 — Oct 10 – Oct 16, 2026',
+    'Week 3 — Oct 17 – Oct 23, 2026',
+    'Week 4 — Oct 24 – Oct 30, 2026',
+    'Week 5 — Oct 31 – Nov 6, 2026',
+    'Week 6 — Nov 7 – Nov 13, 2026',
+    'Week 7 — Nov 14 – Nov 20, 2026',
+    'Week 8 — Nov 21 – Nov 27, 2026',
+    'Week 9 — Nov 28 – Dec 4, 2026',
+    'Week 10 — Dec 5 – Dec 11, 2026',
+    'Week 11 — Dec 12 – Dec 18, 2026',
+    'Week 12 — Dec 19 – Dec 25, 2026',
+    'Week 13 — Dec 26 – Dec 31, 2026'
+  ];
+  return {
+    label:'Quarter 4: October 3, 2026 – December 31, 2026',
+    weeks,
+    personal:[
+      'Week 1 — Oct 3 – Oct 9, 2026',
+      'Biweekly 1 — Oct 10 – Oct 23, 2026',
+      'Biweekly 2 — Oct 24 – Nov 6, 2026',
+      'Biweekly 3 — Nov 7 – Nov 20, 2026',
+      'Biweekly 4 — Nov 21 – Dec 4, 2026',
+      'Biweekly 5 — Dec 5 – Dec 18, 2026',
+      'Biweekly 6 — Dec 19 – Dec 31, 2026'
+    ]
+  };
+}
+
+const QUARTERS={};
+for(let y=2026;y<=2027;y++){
+  for(let q=1;q<=4;q++){
+    QUARTERS[`q${q}_${y}`]=makeQuarter(y,q);
+  }
+}
+QUARTERS.q4_2026=makeScheduledQ4_2026();
+
+function quarterKeyForDate(d=new Date()){
+  const y=d.getFullYear();
+  if(y===2026 && d>=new Date(2026,9,3) && d<=new Date(2026,11,31)) return 'q4_2026';
+  if(y===2026 && d>=new Date(2026,6,4) && d<=new Date(2026,9,2)) return 'q3_2026';
+  const q=Math.floor(d.getMonth()/3)+1;
+  return `q${q}_${y}`;
+}
+
+function currentQuarterKey(){
+  return quarterKeyForDate(new Date());
+}
+
+function selectCurrentQuarterAndPeriod(){
+  const qKey=currentQuarterKey();
+  const qSelect=document.getElementById('quarterSelect');
+  if(qSelect){
+    qSelect.value=qKey;
+  }
+  // Dynamic v2 uses its own period selectors. Do not call the old
+  // static populateQuarterUI() here because those W17/W39 elements
+  // do not exist during registration.
+  if(QUARTERS[qKey]){
+    activeQuarter=qKey;
+    if(typeof quarterStore==='object' && quarterStore){
+      quarterStore.current=qKey;
+      if(!quarterStore.quarters[qKey]) quarterStore.quarters[qKey]=blankState();
+      state=quarterStore.quarters[qKey];
+    }
+  }
+  const q=QUARTERS[qKey];
+  if(!q)return;
+
+  // Location tabs use weekly periods.
+  regLocs().forEach((loc,i)=>{
+    const sel=document.getElementById(`loc_${i+1}period`);
+    if(sel){
+      const now=new Date();
+      const start=new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      let qStart;
+      if(qKey==='q4_2026') qStart=new Date(2026,9,3);
+      else if(qKey==='q3_2026') qStart=new Date(2026,6,4);
+      else qStart=new Date(now.getFullYear(),(Number(qKey.split('_')[0].slice(1))-1)*3,1);
+      let index=Math.floor((start-qStart)/604800000);
+      if(index<0)index=0;
+      if(index>=q.weeks.length)index=q.weeks.length-1;
+      sel.value=q.weeks[index];
+    }
+  });
+
+  // Personal uses Week 1, then biweekly periods.
+  const ps=document.getElementById('personalperiod');
+  if(ps){
+    const now=new Date();
+    let chosen=q.personal[0];
+    for(let i=1;i<q.personal.length;i++){
+      const text=q.personal[i];
+      const m=text.match(/—\s*([A-Za-z]{3})\s+(\d+)\s*[–-]\s*([A-Za-z]{3})\s+(\d+),\s*(\d{4})/);
+      if(!m)continue;
+      const endDate=new Date(Number(m[5]), now.getMonth(), Number(m[4]));
+      if(now>=endDate) chosen=text;
+    }
+    ps.value=chosen;
+  }
+}
+
+
+function ensureAllQuarterStates(){
+  const saved=JSON.parse(localStorage.getItem(QUARTER_KEY)||'null')||{current:currentQuarterKey(),quarters:{}};
+  saved.quarters=saved.quarters||{};
+  Object.keys(QUARTERS).forEach(k=>{ if(!saved.quarters[k]) saved.quarters[k]=blankState(); });
+  if(!QUARTERS[saved.current]) saved.current=currentQuarterKey();
+  localStorage.setItem(QUARTER_KEY,JSON.stringify(saved));
+  return saved;
+}
+
+function blankState(){return {w17:[],w39:[],personal:[],personalPTO:[],pto:{w17:[[],[]],w39:[[],[]]}}}
+function normalizeState(s){s=s||blankState();s.w17=s.w17||[];s.w39=s.w39||[];s.personal=s.personal||[];s.personalPTO=s.personalPTO||[];s.pto=s.pto||{};s.pto.w17=s.pto.w17||[[],[]];s.pto.w39=s.pto.w39||[[],[]];return s}
+let quarterStore=JSON.parse(localStorage.getItem(QUARTER_KEY)||'null');
+if(!quarterStore||!quarterStore.quarters){const legacy=JSON.parse(localStorage.getItem(KEY)||'null');quarterStore={current:currentQuarterKey(),quarters:{q3_2026:normalizeState(legacy),q4_2026:blankState()}};}
+else{
+  const oldCurrent=quarterStore.current;
+  const migratedCurrent=(oldCurrent==='q4'?'q4_2026':oldCurrent==='q3'?'q3_2026':oldCurrent);
+  quarterStore.current=QUARTERS[migratedCurrent]?migratedCurrent:currentQuarterKey();
+  quarterStore.quarters.q3_2026=normalizeState(quarterStore.quarters.q3_2026||quarterStore.quarters.q3);
+  quarterStore.quarters.q4_2026=normalizeState(quarterStore.quarters.q4_2026||quarterStore.quarters.q4);
+}
+function quarterForToday(){
+ const d=new Date();
+ const now=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+ const starts=Object.entries(QUARTERS).map(([id,q])=>{
+   const m=q.label.match(/(\w+) (\d+): ([A-Za-z]+) (\d+), (\d+) –/);
+   if(!m)return null;
+   const months={January:0,February:1,March:2,April:3,May:4,June:5,July:6,August:7,September:8,October:9,November:10,December:11};
+   return {id,date:new Date(Number(m[5]),months[m[3]],Number(m[4]))};
+ }).filter(Boolean).sort((a,b)=>a.date-b.date);
+ let current=starts[0]?.id||'q3';
+ for(const x of starts) if(x.date<=now) current=x.id;
+ return current;
+}
+Object.keys(QUARTERS).forEach(k=>{if(!quarterStore.quarters[k])quarterStore.quarters[k]=blankState();});
+let activeQuarter=quarterForToday();
+quarterStore.current=activeQuarter;
+let state=quarterStore.quarters[activeQuarter];
+function persistQuarters(){quarterStore.current=activeQuarter;quarterStore.quarters[activeQuarter]=state;localStorage.setItem(QUARTER_KEY,JSON.stringify(quarterStore));localStorage.setItem(KEY,JSON.stringify(state))}
+function switchQuarter(q){if(!QUARTERS[q])return;quarterStore.quarters[activeQuarter]=state;activeQuarter=q;state=quarterStore.quarters[q];persistQuarters();populateQuarterUI();render()}
+function populateQuarterUI(){const q=QUARTERS[activeQuarter];document.getElementById('quarterSelect').value=activeQuarter;document.getElementById('quarterLabel').textContent=q.label;document.getElementById('w17period').innerHTML=q.weeks.map(x=>'<option>'+esc(x)+'</option>').join('');document.getElementById('w39period').innerHTML=q.weeks.map(x=>'<option>'+esc(x)+'</option>').join('');document.getElementById('personalperiod').innerHTML=q.personal.map(x=>'<option>'+esc(x)+'</option>').join('')}
+function total(a){return a.reduce((s,e)=>s+Number(e.hours),0)} function fmt(n){return Number(n).toLocaleString(undefined,{maximumFractionDigits:2})}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function auth(){return new Promise(resolve=>{const m=document.getElementById('passwordModal'),i=document.getElementById('passwordInput');m.classList.add('show');m.setAttribute('aria-hidden','false');i.value='';setTimeout(()=>{i.focus();i.click()},80);window.__passwordResolve=resolve;i.onkeydown=e=>{if(e.key==='Enter')closePassword(true);if(e.key==='Escape')closePassword(false)}})}
+function closePassword(ok){const m=document.getElementById('passwordModal'),i=document.getElementById('passwordInput'),resolve=window.__passwordResolve;if(!resolve)return;const saved=JSON.parse(localStorage.getItem(REG_KEY)||'{}');const expected=saved.adminPassword||PW;const accepted=ok&&String(i.value)===String(expected);m.classList.remove('show');m.setAttribute('aria-hidden','true');window.__passwordResolve=null;i.onkeydown=null;resolve(accepted)}
+function save(){persistQuarters();render()}
+function parsePeriodRange(label){
+  const m=String(label).match(/(?:Week|Biweekly)\s+\d+\s+—\s+([A-Za-z]+\s+\d+)\s*[–-]\s*([A-Za-z]+\s+\d+),\s*(\d{4})/);
+  if(!m)return null;
+  const y=Number(m[3]);
+  const endYear = new Date(`${m[2]}, ${y}`).getMonth() < new Date(`${m[1]}, ${y}`).getMonth() ? y+1 : y;
+  const start=new Date(`${m[1]}, ${y}`);
+  const end=new Date(`${m[2]}, ${endYear}`);
+  start.setHours(0,0,0,0); end.setHours(23,59,59,999);
+  return {start,end};
+}
+function selectCurrentPeriodFor(id){
+  const today=new Date();
+  today.setHours(12,0,0,0);
+  const select=document.getElementById(id+'period');
+  if(!select)return;
+  const options=[...select.options];
+  const match=options.find(o=>{
+    const r=parsePeriodRange(o.textContent);
+    return r && today>=r.start && today<=r.end;
+  });
+  if(match) select.value=match.value;
+}
+function openCurrentQuarterForTab(id){
+  const q=currentQuarterKey();
+  if(QUARTERS[q] && q!==activeQuarter){
+    quarterStore.quarters[activeQuarter]=state;
+    activeQuarter=q;
+    state=quarterStore.quarters[q]||blankState();
+    ensureDynamicState();
+    persistQuarters();
+    populateQuarterUI();
+    render();
+  } else {
+    document.getElementById('quarterSelect').value=activeQuarter;
+    document.getElementById('quarterLabel').textContent=QUARTERS[activeQuarter].label;
+  }
+  if(id.startsWith('loc_')) selectCurrentPeriodFor(id);
+  else if(id==='personal') selectCurrentPeriodFor('personal');
+}
+function tab(id,b){
+  if(id.startsWith('loc_')||id==='personal') openCurrentQuarterForTab(id);
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+}
+async function submitLocation(loc){
+ if(!(await auth()))return alert('Incorrect password. No entry was added.');
+ const p=document.getElementById(loc+'period').value;
+ const h=Number(document.getElementById(loc+'hours').value);
+ const entryId=crypto.randomUUID();
+ if(h>0 && Number.isFinite(h)) state[loc].push({id:entryId,period:p,hours:h,date:new Date().toLocaleString(),type:'Regular',entryId});
+
+ const peopleCount=loc==='w17'?2:2;
+ for(let i=0;i<peopleCount;i++){
+   const el=document.getElementById(loc+'pto_'+i), ph=Number(el.value);
+   if(ph>0 && Number.isFinite(ph)) state.pto[loc][i].push({id:crypto.randomUUID(),period:p,hours:ph,date:new Date().toLocaleString(),type:'PTO',entryId});
+ }
+ if(!(h>0) && !Array.from({length:peopleCount},(_,i)=>Number(document.getElementById(loc+'pto_'+i).value)).some(x=>x>0)) return alert('Enter regular hours or PTO hours.');
+ document.getElementById(loc+'hours').value='';
+ for(let i=0;i<peopleCount;i++) document.getElementById(loc+'pto_'+i).value='';
+ save();
+}
+async function addPTO(loc,i){if(!(await auth()))return alert('Incorrect password.');let h=Number(document.getElementById(loc+'pto_'+i).value);if(!Number.isFinite(h)||h<=0)return alert('Enter valid PTO hours.');let p=document.getElementById(loc+'period').value;state.pto[loc][i].push({id:crypto.randomUUID(),period:p,hours:h,date:new Date().toLocaleString(),type:'PTO'});document.getElementById(loc+'pto_'+i).value='';save()}
+async function addPersonal(){
+ if(!(await auth()))return alert('Incorrect password.');
+ const p=document.getElementById('personalperiod').value;
+ const h=Number(document.getElementById('personalhours').value);
+ const ph=Number(document.getElementById('personalpto').value);
+ const entryId=crypto.randomUUID();
+ if(h>0 && Number.isFinite(h)) state.personal.push({id:entryId,entryId,period:p,hours:h,date:new Date().toLocaleString(),type:'Personal'});
+ if(ph>0 && Number.isFinite(ph)) state.personalPTO.push({id:crypto.randomUUID(),entryId,period:p,hours:ph,date:new Date().toLocaleString(),type:'PTO'});
+ if(!(h>0) && !(ph>0))return alert('Enter personal hours or PTO hours.');
+ document.getElementById('personalhours').value='';
+ document.getElementById('personalpto').value='';
+ save();
+}
+async function clearEntry(kind,loc,id,i){
+ if(!(await auth()))return alert('Incorrect password.');
+ if(kind==='pto') state.pto[loc][i]=state.pto[loc][i].filter(e=>e.id!==id);
+ else if(kind==='personalPTO') state.personalPTO=state.personalPTO.filter(e=>e.id!==id);
+ else state[kind]=state[kind].filter(e=>e.id!==id);
+ save();
+}
+async function clearSelected(loc){if(!(await auth()))return alert('Incorrect password.');let p=document.getElementById(loc+'period').value;state[loc]=state[loc].filter(e=>e.period!==p);state.pto[loc].forEach((a,i)=>state.pto[loc][i]=a.filter(e=>e.period!==p));save()}
+function calc(loc,p){let regular=state[loc].filter(e=>e.period===p), rh=total(regular);let ph=state.pto[loc].reduce((s,a)=>s+total(a.filter(e=>e.period===p)),0);return {rh,ph,counted:rh-ph}}
+function variance(a,l){return a>l?`<span class="over">OVER by ${fmt(a-l)}</span>`:`<span class="under">${fmt(l-a)} under</span>`}
+function renderLoc(loc){
+ const regularTotal=total(state[loc]);
+ const ptoTotal=state.pto[loc].reduce((sum,a)=>sum+total(a),0);
+ const countedTotal=regularTotal-ptoTotal;
+ const remain=975-countedTotal;
+ document.getElementById(loc+'stats').innerHTML=`<div class="stats">
+ <div class="stat">Regular input<b>${fmt(regularTotal)}</b></div>
+ <div class="stat">PTO<b>${fmt(ptoTotal)}</b></div>
+ <div class="stat">Hours counted after PTO<b>${fmt(countedTotal)}</b></div>
+ <div class="stat">Quarter remaining<b>${fmt(remain)}</b></div>
+ <div class="stat"><strong>Bonus Amount:</strong><b>$${fmt(remain*RATE)}</b><span class="money">${fmt(remain)} X $15</span></div>
+ </div>`;
+ document.getElementById(loc+'log').innerHTML=locationPayPeriodLog(loc);
+}
+function locationPayPeriodLog(loc){
+ const groups={};
+ state[loc].forEach(e=>{
+   const key=e.period;
+   if(!groups[key])groups[key]={period:key,date:e.date,regular:0,pto:0};
+   groups[key].regular+=Number(e.hours);
+ });
+ state.pto[loc].forEach(a=>a.forEach(e=>{
+   const key=e.period;
+   if(!groups[key])groups[key]={period:key,date:e.date,regular:0,pto:0};
+   groups[key].pto+=Number(e.hours);
+ }));
+ const rows=Object.values(groups).sort((a,b)=>new Date(b.date)-new Date(a.date));
+ if(!rows.length)return '<div class="notice">No saved entries yet.</div>';
+ return '<table><tr><th>Date</th><th>Period</th><th>Hours / PTO</th><th>Action</th></tr>'+
+ rows.map(g=>`<tr>
+ <td>${esc(g.date)}</td>
+ <td><div class="log-location">${esc(loc.toUpperCase())}</div><div>${esc(g.period)}</div></td>
+ <td>${fmt(g.regular)}${g.admin?' + Admin '+fmt(g.admin):''}${g.pto?' + Admin + Assistant PTO '+fmt(g.pto):''}<br><strong>Counted: ${fmt(g.regular-g.pto)}</strong></td>
+ <td><button class="danger" onclick='clearPayPeriod(${JSON.stringify(loc.toUpperCase())},${JSON.stringify(g.period)})'>Clear</button></td>
+ </tr>`).join('')+'</table>';
+}
+function table(a,loc,kind){if(!a.length)return '';return '<table><tr><th>Date</th><th>Period</th><th>Hours</th><th>Action</th></tr>'+a.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.period)}</td><td>${fmt(e.hours)}</td><td><button class="danger" onclick="clearEntry('${loc}','${loc}','${e.id}')">Clear</button></td></tr>`).join('')+'</table>'}
+function ptoTable(loc){return ''}
+
+function biGroup(period){const m=String(period).match(/Week\s+(\d+)/i);if(!m)return period;const n=Number(m[1]);const q=QUARTERS[activeQuarter];return q.personal[n===1?0:Math.floor((n-2)/2)+1]||period}
+function biweeklyLogTable(){
+ const groups={};
+ const add=(location,period,hours,pto)=>{
+   const key=location+'|'+period;
+   if(!groups[key]) groups[key]={location,period,regular:0,pto:0};
+   if(pto) groups[key].pto += Number(hours);
+   else groups[key].regular += Number(hours);
+ };
+ state.w17.forEach(e=>add('W17',biGroup(e.period),e.hours,false));
+ state.w39.forEach(e=>add('W39',biGroup(e.period),e.hours,false));
+ state.pto.w17.forEach(a=>a.forEach(e=>add('W17',biGroup(e.period),e.hours,true)));
+ state.pto.w39.forEach(a=>a.forEach(e=>add('W39',biGroup(e.period),e.hours,true)));
+ state.personal.forEach(e=>add('Personal',e.period,e.hours,false));
+
+ const rows=Object.values(groups);
+ if(!rows.length)return '<div class="notice">No saved entries yet.</div>';
+
+ return '<table><tr><th>Location</th><th>Biweekly Period</th><th>Regular Hours</th><th>PTO</th><th>Hours Counted</th></tr>'+
+ rows.map(x=>'<tr><td><strong>'+esc(x.location)+'</strong></td><td>'+esc(x.period)+'</td><td>'+fmt(x.regular)+'</td><td>'+fmt(x.pto)+'</td><td>'+fmt(x.regular-x.pto)+'</td></tr>').join('')+
+ '</table>';
+}
+function allLogTable(a){
+ if(!a.length)return '<div class="notice">No saved entries yet.</div>';
+ const groups={};
+ a.forEach(e=>{
+   const location=e.location || (e.category && e.category.startsWith('Personal') ? 'Personal' : '');
+   const key=location+'|'+e.period;
+   if(!groups[key]) groups[key]={location,period:e.period,date:e.date,regular:0,pto:0};
+   if(e.type==='PTO' || (e.category&&e.category.startsWith('PTO'))) groups[key].pto+=Number(e.hours);
+   else groups[key].regular+=Number(e.hours);
+ });
+ const rows=Object.values(groups).sort((a,b)=>new Date(b.date)-new Date(a.date));
+ return '<table><tr><th>Date</th><th>Period</th><th>Hours</th><th>Action</th></tr>'+
+ rows.map(g=>`<tr><td>${esc(g.date)}</td><td><div class="log-location">${esc(g.location)}</div><div>${esc(g.period)}</div></td><td>${fmt(g.regular)}${g.pto ? ' + PTO '+fmt(g.pto) : ''}<br><strong>Counted: ${fmt(g.regular-g.pto)}</strong></td><td><button class="danger" onclick='clearPayPeriod(${JSON.stringify(g.location)},${JSON.stringify(g.period)})'>Clear</button></td></tr>`).join('')+'</table>';
+}
+async function clearPayPeriod(location,period){
+ if(!(await auth()))return alert('Incorrect password. Entry was not cleared.');
+ const loc=String(location).toLowerCase();
+ if(loc==='personal'){
+   state.personal=state.personal.filter(e=>e.period!==period);
+   state.personalPTO=state.personalPTO.filter(e=>e.period!==period);
+ } else if(loc==='w17' || loc==='w39'){
+   state[loc]=state[loc].filter(e=>e.period!==period);
+   for(let i=0;i<state.pto[loc].length;i++)
+     state.pto[loc][i]=state.pto[loc][i].filter(e=>e.period!==period);
+ }
+ save();
+}
+async function clearFromAll(category,id,entryId){
+ if(!(await auth()))return alert('Incorrect password. Entry was not cleared.');
+ const eid=entryId||id;
+ for(const loc of ['w17','w39']){
+   state[loc]=state[loc].filter(e=>(e.entryId||e.id)!==eid);
+   for(let i=0;i<2;i++) state.pto[loc][i]=state.pto[loc][i].filter(e=>(e.entryId||e.id)!==eid);
+ }
+ state.personal=state.personal.filter(e=>(e.entryId||e.id)!==eid);
+ save();
+}
+async function submitPersonal(){
+ if(!(await auth()))return alert('Incorrect password. No entry was added.');
+ const p=document.getElementById('personalperiod').value;
+ const h=Number(document.getElementById('personalhours').value);
+ const ph=Number(document.getElementById('personalpto').value);
+ const entryId=crypto.randomUUID();
+ if(h>0 && Number.isFinite(h)) state.personal.push({id:entryId,entryId,period:p,hours:h,date:new Date().toLocaleString(),type:'Regular'});
+ if(ph>0 && Number.isFinite(ph)) state.personalPTO.push({id:crypto.randomUUID(),entryId,period:p,hours:ph,date:new Date().toLocaleString(),type:'PTO'});
+ if(!(h>0) && !(ph>0)) return alert('Enter personal hours or PTO hours.');
+ document.getElementById('personalhours').value='';
+ document.getElementById('personalpto').value='';
+ save();
+}
+async function backupData(){
+ if(!(await auth()))return alert('Incorrect password. Backup was not created.');
+ try{
+   quarterStore.quarters[activeQuarter]=state;
+   quarterStore.current=activeQuarter;
+   const payload={version:1,app:'Quarter Hours Tracker',created:new Date().toISOString(),data:quarterStore};
+   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+   const url=URL.createObjectURL(blob);
+   const a=document.createElement('a');a.href=url;a.download='Quarter-Hours-Tracker-backup.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+ }catch(e){alert('Backup failed.');}
+}
+async function restoreData(){
+ if(!(await auth()))return alert('Incorrect password. Restore was cancelled.');
+ document.getElementById('restoreFile').value='';
+ document.getElementById('restoreFile').click();
+}
+function handleRestoreFile(event){
+ const file=event.target.files&&event.target.files[0];
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=function(){
+   try{
+     let parsed=JSON.parse(String(reader.result||'').replace(/^\uFEFF/,''));
+     // Current backup format: {version, app, created, data:{current,quarters:{...}}}
+     let incoming=(parsed&&parsed.data!==undefined)?parsed.data:parsed;
+     if(typeof incoming==='string') incoming=JSON.parse(incoming);
+     if(!incoming||typeof incoming!=='object')throw new Error('Not an object');
+
+     // Accept the original working app backup format: {version, exportedAt, state:{...}}.
+     // That backup contains Quarter 3 data directly under "state".
+     if(!incoming.quarters && incoming.state && typeof incoming.state==='object'){
+       incoming={current:currentQuarterKey(),quarters:{q3_2026:incoming.state,q4_2026:blankState()}};
+     }
+
+     // Accept all tracker backup shapes used by previous versions.
+     // 1) {current, quarters:{q3:...,q4:...}}
+     // 2) {q3:...,q4:...,current:...}
+     // 3) a single raw tracker state {w17:...,w39:...,personal:...}
+     let qs=incoming.quarters;
+     if(!qs && (incoming.q3 || incoming.q4)) qs={q3:incoming.q3,q4:incoming.q4};
+     if(!qs && (incoming.w17 || incoming.w39 || incoming.personal)) qs={q3:incoming,q4:blankState()};
+     if(!qs||typeof qs!=='object')throw new Error('No tracker data found');
+
+     const restoredQ3=normalizeState(qs.q3||blankState());
+     const restoredQ4=normalizeState(qs.q4||blankState());
+     const current=(incoming.current==='q4')?'q4':'q3';
+
+     quarterStore={current,quarters:{q3:restoredQ3,q4:restoredQ4}};
+     activeQuarter=current;
+     state=quarterStore.quarters[activeQuarter];
+     persistQuarters();
+     populateQuarterUI();
+     render();
+     alert('Backup restored successfully.');
+   }catch(e){
+     console.error('Restore error:',e);
+     alert('That file is not a valid Quarter Hours Tracker backup. Please select the JSON file created by Backup Data.');
+   }
+ };
+ reader.onerror=function(){alert('The backup file could not be read.');};
+ reader.readAsText(file);
+}
+
+function render(){renderLoc('w17');renderLoc('w39');let pt=total(state.personal),pp=total(state.personalPTO),counted=pt+pp,r=585-counted;document.getElementById('personalStats').innerHTML=`<div class="stats"><div class="stat">Regular input<b>${fmt(pt)}</b></div><div class="stat">PTO<b>${fmt(pp)}</b></div><div class="stat">Hours counted after PTO<b>${fmt(counted)}</b></div><div class="stat">Hours remaining<b>${fmt(r)}</b></div></div>`;document.getElementById('personalLog').innerHTML=table(state.personal,'personal','personal')+(state.personalPTO.length?'<table><tr><th colspan="4">Personal PTO</th></tr>'+state.personalPTO.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.period)}</td><td>${fmt(e.hours)}</td><td><button class="danger" onclick="clearEntry('personalPTO','personal','${e.id}')">Clear</button></td></tr>`).join('')+'</table>':'');let all=[
+ ...state.w17.map(e=>({...e,location:'W17',category:'Regular Hours',type:'Regular'})),
+ ...state.w39.map(e=>({...e,location:'W39',category:'Regular Hours',type:'Regular'})),
+ ...state.personal.map(e=>({...e,location:'Personal',category:'Personal Hours',type:'Regular'})),
+ ...state.personalPTO.map(e=>({...e,location:'Personal',category:'PTO — Personal',type:'PTO'})),
+ ...state.pto.w17[0].map(e=>({...e,location:'W17',category:'PTO — Daily Roberts',type:'PTO'})),
+ ...state.pto.w17[1].map(e=>({...e,location:'W17',category:'PTO — Ray Young',type:'PTO'})),
+ ...state.pto.w39[0].map(e=>({...e,location:'W39',category:'PTO — Daily Roberts',type:'PTO'})),
+ ...state.pto.w39[1].map(e=>({...e,location:'W39',category:'PTO — Amari Jordan',type:'PTO'}))
+].sort((a,b)=>new Date(b.date)-new Date(a.date));
+document.getElementById('allLog').innerHTML=allLogTable(all)}
+if(!registrationExists()){
+  // First-run setup must happen before any of the old tracker renderer runs.
+  // The legacy renderer can throw before the registration fields are built.
+  showRegistration();
+  setupRegistrationForm();
+} else {
+  populateQuarterUI();
+  render();
+  initializeDynamicTracker();
+  activateDynamicFirst();
+}
+
+/* v2.0 dynamic multi-location registration */
+function regLocs(){const r=getRegistration();return r&&Array.isArray(r.locations)?r.locations:[];}
+function locKey(i){return 'location_'+(i+1);}
+function ensureDynamicState(){
+  const locs=regLocs();
+  state=state||blankState(); state.locations=state.locations||{}; state.adminHours=state.adminHours||{}; state.pto=state.pto||{};
+  locs.forEach((loc,i)=>{const k=locKey(i); if(!Array.isArray(state.locations[k])) state.locations[k]=[]; if(!Array.isArray(state.adminHours)) state.adminHours={}; if(!Array.isArray(state.adminHours[k])) state.adminHours[k]=[]; if(!Array.isArray(state.pto[k])) state.pto[k]=Array.from({length:(loc.ptoEmployees||[]).length},()=>[]);});
+  // Dynamic location data is authoritative. Do not repopulate a cleared
+  // location from the legacy W17/W39 aliases. That caused cleared entries
+  // to reappear after render.
+  state.w17=state.locations.location_1||[]; state.w39=state.locations.location_2||[];
+  state.pto.w17=state.pto.location_1||[]; state.pto.w39=state.pto.location_2||[];
+  return state;
+}
+function buildDynamicTabs(){
+  const tabs=document.querySelector('.tabs'); if(!tabs)return;
+  tabs.innerHTML='';
+  regLocs().forEach((loc,i)=>{const b=document.createElement('button');b.textContent=loc.name||('Location '+(i+1));b.onclick=()=>tab('loc_'+(i+1),b);tabs.appendChild(b);});
+  const p=document.createElement('button');p.textContent='Personal';p.onclick=()=>tab('personal',p);tabs.appendChild(p);
+  const a=document.createElement('button');a.textContent='Admin';a.onclick=()=>tab('admin',a);tabs.appendChild(a);
+  const l=document.createElement('button');l.textContent='Log';l.onclick=()=>tab('log',l);tabs.appendChild(l);
+  tabs.style.gridTemplateColumns=`repeat(${Math.min(Math.max(regLocs().length+2,2),5)},1fr)`;
+}
+function ptoPeopleForLocation(loc){
+  const r=getRegistration()||{};
+  const admin=String(r.adminName||'Administrator').trim()||'Administrator';
+  return [admin,...(loc.ptoEmployees||[])];
+}
+function normalizeAdminPtoSlots(){
+  regLocs().forEach((loc,i)=>{
+    const k=locKey(i);
+    state.pto[k]=Array.isArray(state.pto[k])?state.pto[k]:[];
+    const assistantCount=(loc.ptoEmployees||[]).length;
+    // Older v2 data stored only assistant PTO. Add an empty administrator slot
+    // at the front without moving any existing assistant PTO.
+    if(state.pto[k].length===assistantCount) state.pto[k]=[[],...state.pto[k]];
+    while(state.pto[k].length<assistantCount+1) state.pto[k].push([]);
+  });
+}
+function buildDynamicPanels(){
+  const main=document.querySelector('main'); if(!main)return;
+  main.innerHTML='';
+  regLocs().forEach((loc,i)=>{
+    const k=locKey(i), id='loc_'+(i+1), sec=document.createElement('section'); sec.id=id; sec.className='panel';
+    const employees=ptoPeopleForLocation(loc);
+    sec.innerHTML=`<h2>${esc(loc.name||('Location '+(i+1)))} Hours</h2>
+      <div class="grid"><div class="card"><label>Pay Period</label><select id="${id}period"></select></div>
+      <div class="card"><label>Regular Hours to add</label><input id="${id}hours" type="number" step="any" placeholder="Enter any number">
+      <h3>PTO Hours</h3><div id="${id}ptoRows"></div>
+      <button class="primary full" onclick="submitDynamicLocation('${k}',${i})">Submit Hours + PTO</button>
+      <button class="danger full" onclick="clearDynamicLocation('${k}',${i})">Clear Selected Period</button></div></div>
+      <div class="notice"><b>Tracking only:</b> ${fmt(readLimitValue(loc.weeklyLimit,75))} weekly, ${fmt(readLimitValue(loc.biweeklyLimit,150))} biweekly, and ${fmt(readLimitValue(loc.quarterlyLimit,975))} quarterly. Entries are never rejected for going over. Assistant PTO is deducted from regular hours counted.</div>
+      <div id="${id}stats"></div><div id="${id}log"></div>`;
+    main.appendChild(sec);
+    const rows=sec.querySelector('#'+id+'ptoRows');
+    employees.forEach((emp,j)=>{const row=document.createElement('div');row.className='pto-row';row.innerHTML=`<label>${esc(emp)} PTO hours</label><input id="${id}pto_${j}" type="number" step="any" placeholder="PTO">`;rows.appendChild(row);});
+  });
+  const personal=document.createElement('section');personal.id='personal';personal.className='panel';personal.innerHTML=`<h2>Personal Hours — ${esc(getRegistration()?.adminName||'Administrator')}</h2><div class="card"><label>Pay Period</label><select id="personalperiod"></select></div><div class="card"><div class="notice">Personal target: <b>${fmt(readLimitValue(getRegistration()?.personalQuarterHours,585))} hours</b>. Password is required to add or clear entries.</div><label>${esc(getRegistration()?.adminName||'Administrator')} Hours to add</label><input id="personalhours" type="number" step="any" placeholder="Enter any number"><h3>PTO Hours</h3><input id="personalpto" type="number" step="any" placeholder="Enter PTO hours"><button class="primary" onclick="addPersonal()">Submit Hours + PTO</button></div><div id="personalStats"></div><div id="personalLog"></div>`;main.appendChild(personal);
+  const admin=document.createElement('section');
+admin.id='admin';
+admin.className='panel';
+admin.innerHTML=`<h2>Administrator</h2>
+<div class="card">
+  <div class="notice"><b>Administrator:</b> <span id="adminEditorCurrentName"></span></div>
+  <h3>Edit Administrator</h3>
+  <label>Administrator Name</label>
+  <input id="editAdminName" type="text" autocomplete="off" placeholder="Administrator name">
+  <label>Current Password</label>
+  <input id="editAdminCurrentPassword" type="password" inputmode="numeric" autocomplete="off" placeholder="Enter current password">
+  <label>New Password</label>
+  <input id="editAdminNewPassword" type="password" inputmode="numeric" maxlength="20" autocomplete="new-password" placeholder="Leave blank to keep current password">
+  <label>Confirm New Password</label>
+  <input id="editAdminNewPassword2" type="password" inputmode="numeric" maxlength="20" autocomplete="new-password" placeholder="Confirm new password">
+</div>
+<div class="card">
+  <h3>Edit Locations & PTO Assistants</h3>
+  <div id="adminLocationEditor"></div>
+  <button type="button" id="addAdminLocationBtn" class="secondary full" onclick="addAdminEditLocation(); return false;">+ Add Location</button>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Locations Added</h3>
+    <div class="notice">Use + Add Location above to add locations. Use the Delete button below to remove a location. Deleting a location requires the administrator password.</div>
+    <div id="adminLocationList"></div>
+  </div>
+</div>
+<button type="button" id="saveAdminProfileBtn" class="primary full" onclick="try{saveAdminProfile();}catch(err){console.error(err);alert('Could not save administrator changes: '+(err&&err.message?err.message:err));}return false;">Save Administrator Changes</button>`;
+main.appendChild(admin);
+  const log=document.createElement('section');log.id='log';log.className='panel';log.innerHTML=`<h2>Complete Log — By Location</h2><div class="card"><h3>Backup & Restore</h3><div class="notice">Backup saves all configured 2026 and 2027 quarter data. Restore replaces the tracker data with the selected backup.</div><button class="primary full" onclick="backupData()">Backup Data</button><button class="full" onclick="restoreData()">Restore Data</button></div><div id="allLog"></div>`;main.appendChild(log);
+}
+function changeAdminPassword(){
+  const r=getRegistration();
+  if(!r)return alert('No administrator is registered.');
+  const current=document.getElementById('changeCurrentPassword').value;
+  const next=document.getElementById('changeNewPassword').value;
+  const confirm=document.getElementById('changeNewPassword2').value;
+  if(String(current)!==String(r.adminPassword))return alert('Current password is incorrect.');
+  if(!next)return alert('Enter a new password.');
+  if(next!==confirm)return alert('The new passwords do not match.');
+  if(next.length<4)return alert('New password must be at least 4 characters.');
+  r.adminPassword=next;
+  localStorage.setItem(REG_KEY,JSON.stringify(r));
+  document.getElementById('changeCurrentPassword').value='';
+  document.getElementById('changeNewPassword').value='';
+  document.getElementById('changeNewPassword2').value='';
+  alert('Administrator password changed successfully.');
+}
+var adminDeletedLocationIds=new Set();
+
+function saveAdminProfile(){
+  try{
+    const r=getRegistration();
+    if(!r)return alert('No administrator is registered.');
+    const name=(document.getElementById('editAdminName')?.value||'').trim();
+    const current=(document.getElementById('editAdminCurrentPassword')?.value||'');
+    const newPassword=(document.getElementById('editAdminNewPassword')?.value||'');
+    const confirm=(document.getElementById('editAdminNewPassword2')?.value||'');
+    if(!name)return alert('Enter the administrator name.');
+    if(String(current)!==String(r.adminPassword))return alert('Current password is incorrect.');
+    if(newPassword||confirm){
+      if(newPassword!==confirm)return alert('The new passwords do not match.');
+      if(newPassword.length<4)return alert('New password must be at least 4 characters.');
+    }
+
+    // The editor above is ONLY for NEW locations. Existing locations are
+    // already stored in r.locations and are never replaced by this form.
+    const existing=Array.isArray(r.locations)?r.locations.map((x,i)=>({
+      id:String(x.id||('location_'+(i+1))),
+      name:String(x.name||''),
+      weeklyLimit:readLimitValue(x.weeklyLimit,75),
+      biweeklyLimit:readLimitValue(x.biweeklyLimit,150),
+      quarterlyLimit:readLimitValue(x.quarterlyLimit,975),
+      ptoEmployees:Array.isArray(x.ptoEmployees)?[...x.ptoEmployees]:[]
+    })) : [];
+    const newBlocks=[...document.querySelectorAll('#adminLocationEditor .admin-edit-location')];
+    if(existing.length+newBlocks.length>10)return alert('You can have up to 10 locations.');
+
+    const newLocations=[];
+    const newIds=new Set();
+    for(const b of newBlocks){
+      const locName=(b.querySelector('.adminLocName')?.value||'').trim();
+      if(!locName)return alert('Enter a name/number for every new location.');
+      let id=String(b.dataset.locationId||'').trim();
+      if(!id || !id.startsWith('new_location_')) id='new_location_'+Date.now()+'_'+Math.random().toString(36).slice(2,10);
+      if(newIds.has(id))return alert('Duplicate new location detected.');
+      newIds.add(id);
+      newLocations.push({
+        id,
+        name:locName,
+        weeklyLimit:readLimit(b.querySelector('.adminWeeklyLimit'),75),
+        biweeklyLimit:readLimit(b.querySelector('.adminBiweeklyLimit'),150),
+        quarterlyLimit:readLimit(b.querySelector('.adminQuarterlyLimit'),975),
+        ptoEmployees:[...b.querySelectorAll('.adminEmpName')].map(x=>x.value.trim()).filter(Boolean)
+      });
+    }
+
+    const finalLocations=[...existing,...newLocations];
+    if(!finalLocations.length)return alert('At least one location is required.');
+
+    const oldState=JSON.parse(JSON.stringify(state||blankState()));
+    const oldLocData=oldState.locations||{};
+    const oldPto=oldState.pto||{};
+    const oldAdmin=oldState.adminHours||{};
+    const oldIndexById=new Map(existing.map((x,i)=>[x.id,i]));
+
+    const nextLocations={},nextPto={},nextAdmin={};
+    finalLocations.forEach((loc,newIndex)=>{
+      const newKey='location_'+(newIndex+1);
+      const oldIndex=oldIndexById.has(loc.id)?oldIndexById.get(loc.id):-1;
+      const oldKey=oldIndex>=0?'location_'+(oldIndex+1):null;
+      nextLocations[newKey]=(oldKey&&Array.isArray(oldLocData[oldKey]))?oldLocData[oldKey]:[];
+      nextPto[newKey]=(oldKey&&Array.isArray(oldPto[oldKey]))
+        ?oldPto[oldKey]
+        :Array.from({length:(loc.ptoEmployees||[]).length+1},()=>[]);
+      nextAdmin[newKey]=(oldKey&&Array.isArray(oldAdmin[oldKey]))?oldAdmin[oldKey]:[];
+    });
+
+    state=state||blankState();
+    state.locations=nextLocations;
+    state.pto={...(state.pto||{}),...nextPto};
+    state.adminHours=nextAdmin;
+    state.w17=state.locations.location_1||[];
+    state.w39=state.locations.location_2||[];
+    state.pto.w17=state.pto.location_1||[];
+    state.pto.w39=state.pto.location_2||[];
+
+    r.adminName=name;
+    if(newPassword)r.adminPassword=newPassword;
+    r.locations=finalLocations;
+    localStorage.setItem(REG_KEY,JSON.stringify(r));
+
+    ensureDynamicState();
+    normalizeAdminPtoSlots();
+    persistQuarters();
+    buildDynamicTabs();
+    buildDynamicPanels();
+    selectCurrentQuarterAndPeriod();
+    populateDynamicPeriods();
+    renderDynamic();
+    renderAdminEditor();
+    renderAdminLocationList();
+
+    document.getElementById('editAdminCurrentPassword').value='';
+    document.getElementById('editAdminNewPassword').value='';
+    document.getElementById('editAdminNewPassword2').value='';
+    const adminButton=[...document.querySelectorAll('.tabs button')].find(b=>b.textContent.trim()==='Admin');
+    if(adminButton)tab('admin',adminButton);
+
+    alert(`Administrator information saved. ${newLocations.length} new location(s) added. Existing locations were preserved.`);
+  }catch(err){
+    console.error(err);
+    alert('Could not save administrator changes: '+(err&&err.message?err.message:err));
+  }
+}
+function addAdminEditEmployee(button){
+  const list=button.closest('.admin-edit-location').querySelector('.adminEmployees');
+  const row=document.createElement('div');
+  row.className='admin-edit-employee';
+  row.style.display='grid';
+  row.style.gridTemplateColumns='1fr auto';
+  row.style.gap='7px';
+  row.style.marginTop='7px';
+  row.innerHTML='<input class="adminEmpName" type="text" placeholder="Employee / Assistant name" autocomplete="off"><button type="button" class="danger">Remove</button>';
+  row.querySelector('button').onclick=()=>row.remove();
+  list.appendChild(row);
+}
+
+function renderAdminEditor(){
+  const host=document.getElementById('adminLocationEditor');
+  const r=getRegistration();
+  if(!r||!host)return;
+  host.replaceChildren();
+  document.getElementById('editAdminName').value=r.adminName||'';
+  // Existing locations are intentionally NOT rendered here. This area is
+  // reserved only for locations being added. Existing locations are managed
+  // by the simple list below, where deletion requires the admin password.
+  const hint=document.createElement('div');
+  hint.className='notice';
+  hint.textContent='Use + Add Location below to create a new location. Existing locations are listed below and can only be removed with the Delete button.';
+  host.appendChild(hint);
+}
+
+function renderAdminLocationList(){
+  const host=document.getElementById('adminLocationList');
+  const r=getRegistration();
+  if(!host||!r)return;
+  host.replaceChildren();
+  const locations=Array.isArray(r.locations)?r.locations:[];
+  if(!locations.length){
+    host.innerHTML='<div class="notice">No locations added.</div>';
+    return;
+  }
+  locations.forEach((loc,idx)=>{
+    const row=document.createElement('div');
+    row.style.display='grid';
+    row.style.gridTemplateColumns='1fr auto';
+    row.style.gap='8px';
+    row.style.alignItems='center';
+    row.style.marginTop='8px';
+    row.style.padding='10px';
+    row.style.border='1px solid #ddd';
+    row.style.borderRadius='10px';
+    const name=document.createElement('strong');
+    name.textContent=(idx+1)+'. '+(loc.name||('Location '+(idx+1)));
+    const del=document.createElement('button');
+    del.type='button';
+    del.className='danger';
+    del.textContent='Delete';
+    del.onclick=()=>deleteLocationFromList(loc.id);
+    row.append(name,del);
+    host.appendChild(row);
+  });
+}
+
+async function deleteLocationFromList(locationId){
+  const r=getRegistration();
+  if(!r||!Array.isArray(r.locations))return;
+  if(r.locations.length<=1)return alert('At least one location is required.');
+  const index=r.locations.findIndex(x=>String(x.id||'')===String(locationId||''));
+  if(index<0)return alert('Location not found.');
+  const loc=r.locations[index];
+  if(!(await auth())){
+    alert('Incorrect administrator password. Location was not deleted.');
+    return;
+  }
+  if(!confirm('Delete '+(loc.name||'this location')+'? This cannot be undone.'))return;
+
+  // Preserve all other locations and their data by stable location ID.
+  const oldLocations=[...r.locations];
+  const oldState=JSON.parse(JSON.stringify(state||blankState()));
+  const oldStateLocations=oldState.locations||{};
+  const oldStatePto=oldState.pto||{};
+  const oldStateAdminHours=oldState.adminHours||{};
+  const oldIndexById=new Map(oldLocations.map((x,i)=>[String(x.id||''),i]));
+  const remaining=oldLocations.filter(x=>String(x.id||'')!==String(locationId||''));
+  const nextLocations={},nextPto={},nextAdminHours={};
+  remaining.forEach((x,newIndex)=>{
+    const oldIndex=oldIndexById.get(String(x.id||''));
+    const oldKey='location_'+(oldIndex+1);
+    const newKey='location_'+(newIndex+1);
+    nextLocations[newKey]=Array.isArray(oldStateLocations[oldKey])?oldStateLocations[oldKey]:[];
+    nextPto[newKey]=Array.isArray(oldStatePto[oldKey])?oldStatePto[oldKey]:Array.from({length:(x.ptoEmployees||[]).length+1},()=>[]);
+    nextAdminHours[newKey]=Array.isArray(oldStateAdminHours[oldKey])?oldStateAdminHours[oldKey]:[];
+  });
+
+  state.locations=nextLocations;
+  state.pto={...(state.pto||{}),...nextPto};
+  state.adminHours=nextAdminHours;
+  state.w17=state.locations.location_1||[];
+  state.w39=state.locations.location_2||[];
+  state.pto.w17=state.pto.location_1||[];
+  state.pto.w39=state.pto.location_2||[];
+  r.locations=remaining;
+  localStorage.setItem(REG_KEY,JSON.stringify(r));
+  ensureDynamicState();
+  normalizeAdminPtoSlots();
+  persistQuarters();
+  buildDynamicTabs();
+  buildDynamicPanels();
+  selectCurrentQuarterAndPeriod();
+  populateDynamicPeriods();
+  renderDynamic();
+  renderAdminEditor();
+  renderAdminLocationList();
+  const adminButton=[...document.querySelectorAll('.tabs button')].find(b=>b.textContent.trim()==='Admin');
+  if(adminButton)tab('admin',adminButton);
+  alert((loc.name||'Location')+' was deleted.');
+}
+
+function addAdminEditLocation(){
+  const host=document.getElementById('adminLocationEditor');
+  const r=getRegistration();
+  if(!host||!r){alert('Location editor is not available.');return;}
+  const existingCount=Array.isArray(r.locations)?r.locations.length:0;
+  const pendingCount=host.querySelectorAll('.admin-edit-location').length;
+  if(existingCount+pendingCount>=10){alert('You can have up to 10 locations.');return;}
+
+  const box=document.createElement('div');
+  box.className='admin-edit-location card';
+  box.dataset.locationId='new_location_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+  box.innerHTML=`<h3>New Location</h3>
+    <label>Location Number / Name</label>
+    <input class="adminLocName" type="text" placeholder="Example: W22" autocomplete="off">
+    <div class="admin-location-limits" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px"><div><label>Hours Allowed / Week</label><input class="adminWeeklyLimit" type="number" min="0" step="any" value="75"></div><div><label>Hours Allowed / Biweekly</label><input class="adminBiweeklyLimit" type="number" min="0" step="any" value="150"></div><div><label>Hours Allowed / Quarter</label><input class="adminQuarterlyLimit" type="number" min="0" step="any" value="975"></div></div>
+    <label>Assistant Names (PTO employees)</label>
+    <div class="adminEmployees"></div>
+    <button type="button" class="secondary add-admin-employee">+ Add Employee / Assistant</button>`;
+  box.querySelector('.add-admin-employee').addEventListener('click',function(){addAdminEditEmployee(this);});
+  host.appendChild(box);
+  box.querySelector('.adminLocName').focus();
+}
+
+
+function populateDynamicPeriods(){const q=QUARTERS[activeQuarter];regLocs().forEach((_,i)=>{const s=document.getElementById('loc_'+(i+1)+'period');if(s)s.innerHTML=q.weeks.map(x=>'<option>'+esc(x)+'</option>').join('');});const ps=document.getElementById('personalperiod');if(ps)ps.innerHTML=q.personal.map(x=>'<option>'+esc(x)+'</option>').join('');}
+function initializeDynamicTracker(){if(!registrationExists())return;ensureDynamicState();normalizeAdminPtoSlots();buildDynamicTabs();buildDynamicPanels();renderAdminEditor();renderAdminLocationList();
+selectCurrentQuarterAndPeriod();populateDynamicPeriods();renderDynamic();}
+function activateDynamicFirst(){const b=document.querySelector('.tabs button');if(b)tab('loc_1',b);}
+function completeRegistration(){
+ const name=document.getElementById('regAdminName').value.trim(),p1=document.getElementById('regAdminPassword').value,p2=document.getElementById('regAdminPassword2').value;
+ if(!name)return alert('Enter the administrator name.'); if(!p1)return alert('Create an administrator password.'); if(p1!==p2)return alert('The administrator passwords do not match.');
+ const locations=[...document.querySelectorAll('.reg-location')].map((b,i)=>({id:'location_'+(i+1),name:b.querySelector('.regLocName').value.trim(),weeklyLimit:readLimit(b.querySelector('.regWeeklyLimit'),75),biweeklyLimit:readLimit(b.querySelector('.regBiweeklyLimit'),150),quarterlyLimit:readLimit(b.querySelector('.regQuarterlyLimit'),975),ptoEmployees:[...b.querySelectorAll('.regEmpName')].map(x=>x.value.trim()).filter(Boolean)}));if(locations.some(x=>!x.name))return alert('Enter a location number for every location (for example W22).');
+ const personalQuarterHours=readLimit(document.getElementById('regPersonalQuarterHours'),585);
+ localStorage.setItem(REG_KEY,JSON.stringify({version:1,adminName:name,adminPassword:p1,personalQuarterHours,locations,registeredAt:new Date().toISOString()}));
+ state=blankState(); ensureDynamicState(); normalizeAdminPtoSlots(); persistQuarters(); initializeDynamicTracker(); hideRegistration(); activateDynamicFirst(); alert('Registration complete. Welcome, '+name+'! You are signed in as administrator for testing.');
+}
+async function submitDynamicLocation(k,i){
+ if(!(await auth())) return;
+
+ const p=document.getElementById('loc_'+(i+1)+'period').value,h=Number(document.getElementById('loc_'+(i+1)+'hours').value),loc=regLocs()[i],people=ptoPeopleForLocation(loc);
+ normalizeAdminPtoSlots();
+ const ptoVals=people.map((_,j)=>Number(document.getElementById('loc_'+(i+1)+'pto_'+j).value));
+ if(!(h>0) && !ptoVals.some(x=>x>0))return alert('Enter location hours or PTO hours.');
+ const entryId=crypto.randomUUID(); if(h>0&&Number.isFinite(h))state.locations[k].push({id:entryId,period:p,hours:h,date:new Date().toLocaleString(),type:'Regular'});
+ state.pto[k]=state.pto[k]||Array.from({length:people.length},()=>[]);
+ ptoVals.forEach((ph,j)=>{if(ph>0&&Number.isFinite(ph)){state.pto[k][j]=state.pto[k][j]||[];state.pto[k][j].push({id:crypto.randomUUID(),period:p,hours:ph,date:new Date().toLocaleString(),type:'PTO',entryId});}});
+ document.getElementById('loc_'+(i+1)+'hours').value='';people.forEach((_,j)=>document.getElementById('loc_'+(i+1)+'pto_'+j).value='');saveDynamic();
+}
+
+async function clearDynamicLocation(k,i){
+  if(!(await auth())){ alert('Incorrect password. Entry was not cleared.'); return; }
+  const sel=document.getElementById('loc_'+(i+1)+'period');
+  if(!sel){ alert('Could not find the selected pay period.'); return; }
+  const p=String(sel.value||'').trim();
+  ensureDynamicState();
+  const beforeRegular=Array.isArray(state.locations[k])?state.locations[k].length:0;
+  const beforePto=(Array.isArray(state.pto[k])?state.pto[k]:[]).reduce((n,a)=>n+(Array.isArray(a)?a.length:0),0);
+  state.locations[k]=(Array.isArray(state.locations[k])?state.locations[k]:[]).filter(e=>String(e.period||'').trim()!==p);
+  state.pto[k]=(Array.isArray(state.pto[k])?state.pto[k]:[]).map(a=>(Array.isArray(a)?a:[]).filter(e=>String(e.period||'').trim()!==p));
+  // Keep the legacy aliases synchronized AFTER clearing so ensureDynamicState
+  // cannot restore the old entries from the stale W17/W39 aliases.
+  if(!state.pto) state.pto={};
+  if(k==='location_1'){ state.w17=state.locations[k]; state.pto.w17=state.pto[k]; }
+  if(k==='location_2'){ state.w39=state.locations[k]; state.pto.w39=state.pto[k]; }
+  const cleared=(beforeRegular-(state.locations[k]||[]).length)+(beforePto-(state.pto[k]||[]).reduce((n,a)=>n+(Array.isArray(a)?a.length:0),0));
+  persistQuarters();
+  renderDynamic();
+  alert(cleared ? 'Selected period cleared.' : 'No entries were found for the selected period.');
+}
+function saveDynamic(){persistQuarters();renderDynamic();}
+function dynamicCalc(k,p){const regular=state.locations[k]||[],rh=total(regular.filter(e=>e.period===p));const ph=(state.pto[k]||[]).reduce((s,a)=>s+total((a||[]).filter(e=>e.period===p)),0);return{rh,ph,counted:rh-ph};}
+function renderDynamic(){
+ ensureDynamicState();
+ normalizeAdminPtoSlots();
+ regLocs().forEach((loc,i)=>{const k=locKey(i),id='loc_'+(i+1),arr=state.locations[k]||[],admins=state.adminHours[k]||[],ptos=state.pto[k]||[],regularTotal=total(arr),adminTotal=total(admins),ptoTotal=ptos.reduce((s,a)=>s+total(a||[]),0),counted=regularTotal-ptoTotal,p= document.getElementById(id+'period')?.value||'';
+  const c=p?dynamicCalc(k,p):{rh:0,ph:0,counted:0}; const quarterLimit=readLimitValue(loc.quarterlyLimit,975); const remain=quarterLimit-counted; const stats=document.getElementById(id+'stats');if(stats)stats.innerHTML=`<div class="stats"><div class="stat">Regular input<b>${fmt(regularTotal)}</b></div><div class="stat">Admin + Assistant PTO<b>${fmt(ptoTotal)}</b></div><div class="stat">Regular hours counted after PTO<b>${fmt(counted)}</b></div><div class="stat">Quarter remaining<b>${fmt(remain)}</b><span class="money"><strong>Bonus Amount:</strong> ${fmt(remain)} X $15 = $${fmt(remain*RATE)}</span></div></div>`;
+  const log=document.getElementById(id+'log');if(log)log.innerHTML=locationCombinedLog(k,i);
+ });
+ const pt=total(state.personal||[]),pp=total(state.personalPTO||[]),counted=pt+pp,r=readLimitValue(getRegistration()?.personalQuarterHours,585)-counted;const ps=document.getElementById('personalStats');if(ps)ps.innerHTML=`<div class="stats"><div class="stat">Regular input<b>${fmt(pt)}</b></div><div class="stat">PTO<b>${fmt(pp)}</b></div><div class="stat">Hours counted after PTO<b>${fmt(counted)}</b></div><div class="stat">Hours remaining<b>${fmt(r)}</b></div></div>`;
+ const pl=document.getElementById('personalLog');if(pl)pl.innerHTML=tableDynamic(state.personal||[],'personal')+(state.personalPTO&&state.personalPTO.length?'<table><tr><th colspan="4">Personal PTO</th></tr>'+state.personalPTO.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.period)}</td><td>${fmt(e.hours)}</td><td><button class="danger" onclick="clearEntryDynamic('personalPTO','personal','${e.id}')">Clear</button></td></tr>`).join('')+'</table>':'');
+ const all=[];regLocs().forEach((loc,i)=>{const k=locKey(i);(state.locations[k]||[]).forEach(e=>all.push({...e,location:loc.name,category:'Regular Hours',type:'Regular'}));(state.adminHours[k]||[]).forEach(e=>all.push({...e,location:loc.name,category:'Administrator — '+(getRegistration()?.adminName||'Administrator'),type:'Administrator Hours'}));(state.pto[k]||[]).forEach((a,j)=>(a||[]).forEach(e=>all.push({...e,location:loc.name,category:'PTO — '+(ptoPeopleForLocation(loc)[j]||'Employee'),type:'PTO'})));});(state.personal||[]).forEach(e=>all.push({...e,location:'Personal',category:'Personal Hours',type:'Regular'}));(state.personalPTO||[]).forEach(e=>all.push({...e,location:'Personal',category:'PTO — Personal',type:'PTO'}));all.sort((a,b)=>new Date(b.date)-new Date(a.date));const al=document.getElementById('allLog');if(al)al.innerHTML=allLogTableDynamic(all);
+}
+function tableDynamic(a,k){return '<table><tr><th>Date</th><th>Period</th><th>Hours</th><th>Action</th></tr>'+a.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.period)}</td><td>${fmt(e.hours)}</td><td><button class="danger" onclick="clearEntryDynamic('regular','${k}','${e.id}')">Clear</button></td></tr>`).join('')+'</table>';}
+function locationCombinedLog(k,i){
+ const loc=regLocs()[i]||{}; const rows={};
+ (state.locations[k]||[]).forEach(e=>{const key=e.period;if(!rows[key])rows[key]={period:key,date:e.date,regular:0,pto:0};rows[key].regular+=Number(e.hours)||0;});
+ (state.pto[k]||[]).forEach(a=>(a||[]).forEach(e=>{const key=e.period;if(!rows[key])rows[key]={period:key,date:e.date,regular:0,pto:0};rows[key].pto+=Number(e.hours)||0;}));
+ const list=Object.values(rows).sort((a,b)=>new Date(b.date)-new Date(a.date));
+ if(!list.length)return '<div class="notice">No saved entries yet.</div>';
+ return '<table><tr><th>Date</th><th>Period</th><th>Hours / PTO</th><th>Action</th></tr>'+list.map(g=>`<tr><td>${esc(g.date)}</td><td><strong>${esc(loc.name||'Location')}</strong><br>${esc(g.period)}</td><td>${fmt(g.regular)}${g.pto?' + Admin + Assistant PTO '+fmt(g.pto):''}<br><strong>Counted: ${fmt(g.regular-g.pto)}</strong></td><td><button class="danger" onclick='clearDynamicPayPeriod(${JSON.stringify(loc.name||'')},${JSON.stringify(g.period)})'>Clear</button></td></tr>`).join('')+'</table>';
+}
+
+async function clearEntryDynamic(kind,k,id){
+ if(!(await auth()))return alert('Incorrect password. Entry was not cleared.');
+ if(kind==='personalPTO'){
+   state.personalPTO=(state.personalPTO||[]).filter(e=>e.id!==id);
+ }else if(kind==='regular'){
+   state.locations[k]=(state.locations[k]||[]).filter(e=>e.id!==id);
+   // Keep legacy aliases from restoring a cleared dynamic entry.
+   if(k==='location_1'){state.w17=state.locations[k];}
+   if(k==='location_2'){state.w39=state.locations[k];}
+ }else if(kind==='pto'){
+   const parts=String(id).split('|');
+   const idx=Number(parts[0]), eid=parts.slice(1).join('|');
+   if(Array.isArray(state.pto[k]) && state.pto[k][idx]) state.pto[k][idx]=state.pto[k][idx].filter(e=>e.id!==eid);
+   if(k==='location_1'){state.pto.w17=state.pto[k];}
+   if(k==='location_2'){state.pto.w39=state.pto[k];}
+ }
+ persistQuarters();
+ renderDynamic();
+ alert('Entry cleared.');
+}
+async function addPersonal(){if(!(await auth()))return alert('Incorrect password.');const p=document.getElementById('personalperiod').value,h=Number(document.getElementById('personalhours').value),ph=Number(document.getElementById('personalpto').value);if(!(h>0)&&!(ph>0))return alert('Enter personal hours or PTO hours.');const entryId=crypto.randomUUID();if(h>0)state.personal.push({id:entryId,period:p,hours:h,date:new Date().toLocaleString(),type:'Regular'});if(ph>0)state.personalPTO.push({id:crypto.randomUUID(),entryId,period:p,hours:ph,date:new Date().toLocaleString(),type:'PTO'});document.getElementById('personalhours').value='';document.getElementById('personalpto').value='';saveDynamic();}
+function allLogTableDynamic(a){if(!a.length)return '<div class="notice">No entries yet.</div>';const groups={};a.forEach(e=>{const key=e.location+'|'+e.period;if(!groups[key])groups[key]={location:e.location,period:e.period,date:e.date,regular:0,pto:0,admin:0};if(e.type==='PTO')groups[key].pto+=Number(e.hours)||0;else if(e.type==='Administrator Hours')groups[key].admin=(groups[key].admin||0)+Number(e.hours)||0;else groups[key].regular+=Number(e.hours)||0;});return '<table><tr><th>Date</th><th>Location / Period</th><th>Hours</th><th>Action</th></tr>'+Object.values(groups).sort((a,b)=>new Date(b.date)-new Date(a.date)).map(g=>`<tr><td>${esc(g.date)}</td><td><strong>${esc(g.location)}</strong><br>${esc(g.period)}</td><td>${fmt(g.regular)}${g.admin?' + Admin '+fmt(g.admin):''}${g.pto?' + PTO '+fmt(g.pto):''}<br><strong>Counted: ${fmt(g.regular-g.pto)}</strong></td><td><button class="danger" onclick='clearDynamicPayPeriod(${JSON.stringify(g.location)},${JSON.stringify(g.period)})'>Clear</button></td></tr>`).join('')+'</table>';}
+async function clearDynamicPayPeriod(location,period){
+ if(!(await auth()))return alert('Incorrect password. Entry was not cleared.');
+ const idx=regLocs().findIndex(x=>x.name===location);
+ if(idx>=0){
+   const k=locKey(idx);
+   const before=(state.locations[k]||[]).length+(state.adminHours[k]||[]).length+(state.pto[k]||[]).reduce((n,a)=>n+(a||[]).length,0);
+   state.locations[k]=(state.locations[k]||[]).filter(e=>e.period!==period);
+   state.adminHours[k]=(state.adminHours[k]||[]).filter(e=>e.period!==period);
+   (state.pto[k]||[]).forEach((a,j)=>state.pto[k][j]=(a||[]).filter(e=>e.period!==period));
+   if(!state.pto) state.pto={};
+   if(k==='location_1'){ state.w17=state.locations[k]; state.pto.w17=state.pto[k]; }
+   if(k==='location_2'){ state.w39=state.locations[k]; state.pto.w39=state.pto[k]; }
+   persistQuarters();
+   renderDynamic();
+   const after=(state.locations[k]||[]).length+(state.adminHours[k]||[]).length+(state.pto[k]||[]).reduce((n,a)=>n+(a||[]).length,0);
+   alert(before!==after?'Selected period cleared.':'No entries were found for the selected period.');
+   return;
+ }
+ if(location==='Personal'){
+   const before=(state.personal||[]).length+(state.personalPTO||[]).length;
+   state.personal=(state.personal||[]).filter(e=>e.period!==period);
+   state.personalPTO=(state.personalPTO||[]).filter(e=>e.period!==period);
+   saveDynamic();
+   alert(before!==((state.personal||[]).length+(state.personalPTO||[]).length)?'Selected period cleared.':'No entries were found for the selected period.');
+   return;
+ }
+ alert('Could not find that registered location.');
+}
+// Replace the static tracker UI whenever a registered user opens the v2 preview.
+if(registrationExists()){initializeDynamicTracker();}
+
+</script></body></html>
