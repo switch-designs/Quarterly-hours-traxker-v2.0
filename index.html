@@ -2,7 +2,7 @@
 <title>Quarter Hours Tracker v2.0</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#eef2f6;color:#18212b;font-family:Arial,sans-serif}
-header{background:linear-gradient(135deg,#17212b,#31556f);color:white;text-align:center;padding:25px 15px}
+header{position:relative;background:linear-gradient(135deg,#17212b,#31556f);color:white;text-align:center;padding:25px 15px}
 h1{margin:0 0 5px;font-size:28px}header p{margin:0;opacity:.82;font-size:13px}
 .tabs{max-width:940px;margin:18px auto 0;padding:0 12px;display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
 .tabs button{border:0;border-radius:9px 9px 0 0;padding:13px 7px;font-weight:700;background:#d9dfe5;cursor:pointer}.tabs button.active{background:#fff}
@@ -24,16 +24,23 @@ button{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:point
 .register-screen input,.register-screen select,.register-screen button{position:relative;z-index:20002;pointer-events:auto}
 .register-screen .register-box{position:relative;z-index:20001}
 <style>
+#registerScreen{display:none!important;visibility:hidden!important;pointer-events:none!important}
 #registrationLocations{display:block!important;visibility:visible!important}
 #registrationLocations .reg-location{display:block!important;visibility:visible!important}
 #registrationLocations input{pointer-events:auto!important;user-select:text!important;-webkit-user-select:text!important}
-</style></style></head><body><div id="registerScreen" class="register-screen" style="display:flex"><div class="register-box"><h1>Register Admin</h1><p class="sub">First-time setup for this phone. Register the administrator before using the tracker.</p><div class="card"><label>Administrator Name</label><input id="regAdminName" type="text" autocomplete="name" placeholder="Enter administrator name"><div class="reg-grid" style="margin-top:12px"><div><label>Create Admin Password</label><input id="regAdminPassword" type="password" inputmode="numeric" maxlength="20" placeholder="Create a password"></div><div><label>Confirm Admin Password</label><input id="regAdminPassword2" type="password" inputmode="numeric" maxlength="20" placeholder="Confirm password"></div></div></div><div class="card"><label>Personal Hours Allowed Per Quarter</label><input id="regPersonalQuarterHours" type="number" min="0" step="any" value="585" placeholder="Example: 585"><small>Used for the Personal tab quarter target. Entries are still allowed above the target.</small></div><div class="card"><label>Number of Locations</label><select id="regLocationCount" onchange="renderRegistrationLocations()" oninput="renderRegistrationLocations()"><option value="1">1 Location</option><option value="2">2 Locations</option><option value="3">3 Locations</option><option value="4">4 Locations</option><option value="5">5 Locations</option><option value="6">6 Locations</option><option value="7">7 Locations</option><option value="8">8 Locations</option><option value="9">9 Locations</option><option value="10">10 Locations</option></select></div><div id="registrationLocations"><div class="reg-location"><h3>Location 1</h3><label>Location Number / Name</label><input class="regLocName" type="text" placeholder="Example: W22" autocomplete="off"><label>Employees / Assistants allowed for PTO</label><div class="regEmployees"><div class="reg-employee-row"><input class="regEmpName" type="text" placeholder="Employee / Assistant name" autocomplete="off"><button type="button" class="danger remove-reg-employee">Remove</button></div></div><button type="button" class="secondary add-reg-employee" style="margin-top:8px">+ Add Employee / Assistant</button></div></div><button class="primary full" onclick="completeRegistration()">Register Admin &amp; Add Assistants</button><button type="button" class="danger full" onclick="resetV2TestData()" style="margin-top:8px">Reset v2.0 Test Data</button></div></div>
-<header><h1>Quarter Hours Tracker <small style="font-size:.45em;font-weight:600;opacity:.8;">v2.0</small></h1><p id="quarterLabel">Quarter 3: July 4, 2026 – October 2, 2026</p></header>
+</style></style></head><body><div id="registerScreen" class="register-screen" style="display:none"><div class="register-box"><h1>Register Admin</h1><p class="sub">First-time setup for this phone. Register the administrator before using the tracker.</p><div class="card"><label>Administrator Name</label><input id="regAdminName" type="text" autocomplete="name" placeholder="Enter administrator name"><div class="reg-grid" style="margin-top:12px"><div><label>Create Admin Password</label><input id="regAdminPassword" type="password" inputmode="numeric" maxlength="20" placeholder="Create a password"></div><div><label>Confirm Admin Password</label><input id="regAdminPassword2" type="password" inputmode="numeric" maxlength="20" placeholder="Confirm password"></div></div></div><div class="card"><label>Personal Hours Allowed Per Quarter</label><input id="regPersonalQuarterHours" type="number" min="0" step="any" value="585" placeholder="Example: 585"><small>Used for the Personal tab quarter target. Entries are still allowed above the target.</small></div><div class="card"><label>Number of Locations</label><select id="regLocationCount" onchange="renderRegistrationLocations()" oninput="renderRegistrationLocations()"><option value="1">1 Location</option><option value="2">2 Locations</option><option value="3">3 Locations</option><option value="4">4 Locations</option><option value="5">5 Locations</option><option value="6">6 Locations</option><option value="7">7 Locations</option><option value="8">8 Locations</option><option value="9">9 Locations</option><option value="10">10 Locations</option></select></div><div id="registrationLocations"><div class="reg-location"><h3>Location 1</h3><label>Location Number / Name</label><input class="regLocName" type="text" placeholder="Example: W22" autocomplete="off"><label>Employees / Assistants allowed for PTO</label><div class="regEmployees"><div class="reg-employee-row"><input class="regEmpName" type="text" placeholder="Employee / Assistant name" autocomplete="off"><button type="button" class="danger remove-reg-employee">Remove</button></div></div><button type="button" class="secondary add-reg-employee" style="margin-top:8px">+ Add Employee / Assistant</button></div></div><button class="primary full" onclick="completeRegistration()">Register Admin &amp; Add Assistants</button><button type="button" class="danger full" onclick="resetV2TestData()" style="margin-top:8px">Reset v2.0 Test Data</button></div></div>
+<header><small style="position:absolute;right:12px;bottom:8px;font-size:10px;font-weight:400;opacity:.85;">Brought to you by Switch-designs</small><h1>Quarter Hours Tracker <small style="font-size:.45em;font-weight:600;opacity:.8;">v2.0</small></h1><p id="quarterLabel">Quarter 3: July 4, 2026 – October 2, 2026</p></header>
 <div class="card" style="max-width:940px;margin:14px auto 0;padding:12px 20px">
 <label>Quarter</label>
 <select id="quarterSelect" onchange="switchQuarter(this.value)">
-<option value="q3">Quarter 3 — July 4, 2026 – October 2, 2026</option>
-<option value="q4">Quarter 4 — October 3, 2026 – December 31, 2026</option>
+<option value="q1_2026">Q1 2026 — January 1 – March 31, 2026</option>
+<option value="q2_2026">Q2 2026 — April 1 – June 30, 2026</option>
+<option value="q3_2026">Q3 2026 — July 4 – October 2, 2026</option>
+<option value="q4_2026">Q4 2026 — October 3 – December 31, 2026</option>
+<option value="q1_2027">Q1 2027 — January 1 – March 31, 2027</option>
+<option value="q2_2027">Q2 2027 — April 1 – June 30, 2027</option>
+<option value="q3_2027">Q3 2027 — July 1 – September 30, 2027</option>
+<option value="q4_2027">Q4 2027 — October 1 – December 31, 2027</option>
 </select>
 </div>
 <div class="tabs"><button class="active" onclick="tab('w17',this)">W17</button><button onclick="tab('w39',this)">W39</button><button onclick="tab('personal',this)">Personal</button><button onclick="tab('log',this)">Log</button></div>
@@ -393,8 +400,8 @@ let activeQuarter=quarterForToday();
 quarterStore.current=activeQuarter;
 let state=quarterStore.quarters[activeQuarter];
 function persistQuarters(){quarterStore.current=activeQuarter;quarterStore.quarters[activeQuarter]=state;localStorage.setItem(QUARTER_KEY,JSON.stringify(quarterStore));localStorage.setItem(KEY,JSON.stringify(state))}
-function switchQuarter(q){if(!QUARTERS[q])return;quarterStore.quarters[activeQuarter]=state;activeQuarter=q;state=quarterStore.quarters[q];persistQuarters();populateQuarterUI();render()}
-function populateQuarterUI(){const q=QUARTERS[activeQuarter];document.getElementById('quarterSelect').value=activeQuarter;document.getElementById('quarterLabel').textContent=q.label;document.getElementById('w17period').innerHTML=q.weeks.map(x=>'<option>'+esc(x)+'</option>').join('');document.getElementById('w39period').innerHTML=q.weeks.map(x=>'<option>'+esc(x)+'</option>').join('');document.getElementById('personalperiod').innerHTML=q.personal.map(x=>'<option>'+esc(x)+'</option>').join('')}
+function switchQuarter(q){if(!QUARTERS[q])return;quarterStore.quarters[activeQuarter]=state;activeQuarter=q;state=quarterStore.quarters[q]||blankState();quarterStore.quarters[q]=state;persistQuarters();populateQuarterUI();const bannerQuarter=document.getElementById('quarterLabel');if(bannerQuarter)bannerQuarter.textContent=QUARTERS[activeQuarter].label;if(registrationExists()){ensureDynamicState();populateDynamicPeriods();renderDynamic()}else{render()}if(bannerQuarter)bannerQuarter.textContent=QUARTERS[activeQuarter].label}
+function populateQuarterUI(){const q=QUARTERS[activeQuarter];if(!q)return;const qs=document.getElementById('quarterSelect');if(qs)qs.value=activeQuarter;const ql=document.getElementById('quarterLabel');if(ql)ql.textContent=q.label;const w17=document.getElementById('w17period');if(w17)w17.innerHTML=q.weeks.map(x=>'<option>'+esc(x)+'</option>').join('');const w39=document.getElementById('w39period');if(w39)w39.innerHTML=q.weeks.map(x=>'<option>'+esc(x)+'</option>').join('');const pp=document.getElementById('personalperiod');if(pp)pp.innerHTML=q.personal.map(x=>'<option>'+esc(x)+'</option>').join('')}
 function total(a){return a.reduce((s,e)=>s+Number(e.hours),0)} function fmt(n){return Number(n).toLocaleString(undefined,{maximumFractionDigits:2})}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function auth(){return new Promise(resolve=>{const m=document.getElementById('passwordModal'),i=document.getElementById('passwordInput');m.classList.add('show');m.setAttribute('aria-hidden','false');i.value='';setTimeout(()=>{i.focus();i.click()},80);window.__passwordResolve=resolve;i.onkeydown=e=>{if(e.key==='Enter')closePassword(true);if(e.key==='Escape')closePassword(false)}})}
@@ -423,19 +430,14 @@ function selectCurrentPeriodFor(id){
   if(match) select.value=match.value;
 }
 function openCurrentQuarterForTab(id){
-  const q=currentQuarterKey();
-  if(QUARTERS[q] && q!==activeQuarter){
-    quarterStore.quarters[activeQuarter]=state;
-    activeQuarter=q;
-    state=quarterStore.quarters[q]||blankState();
-    ensureDynamicState();
-    persistQuarters();
-    populateQuarterUI();
-    render();
-  } else {
-    document.getElementById('quarterSelect').value=activeQuarter;
-    document.getElementById('quarterLabel').textContent=QUARTERS[activeQuarter].label;
-  }
+  // Keep the user's selected quarter when switching between W17/W39/Personal/Admin.
+  // The calendar date must not silently replace the selected quarter; only the
+  // quarter dropdown's switchQuarter() action changes activeQuarter.
+  const q=QUARTERS[activeQuarter];
+  const quarterSelect=document.getElementById('quarterSelect');
+  const quarterLabel=document.getElementById('quarterLabel');
+  if(quarterSelect) quarterSelect.value=activeQuarter;
+  if(quarterLabel && q) quarterLabel.textContent=q.label;
   if(id.startsWith('loc_')) selectCurrentPeriodFor(id);
   else if(id==='personal') selectCurrentPeriodFor('personal');
 }
@@ -492,14 +494,14 @@ function renderLoc(loc){
  const ptoTotal=state.pto[loc].reduce((sum,a)=>sum+total(a),0);
  const countedTotal=regularTotal-ptoTotal;
  const remain=975-countedTotal;
- document.getElementById(loc+'stats').innerHTML=`<div class="stats">
+ const statsEl=document.getElementById(loc+'stats');if(statsEl)statsEl.innerHTML=`<div class="stats">
  <div class="stat">Regular input<b>${fmt(regularTotal)}</b></div>
  <div class="stat">PTO<b>${fmt(ptoTotal)}</b></div>
  <div class="stat">Hours counted after PTO<b>${fmt(countedTotal)}</b></div>
  <div class="stat">Quarter remaining<b>${fmt(remain)}</b></div>
  <div class="stat"><strong>Bonus Amount:</strong><b>$${fmt(remain*RATE)}</b><span class="money">${fmt(remain)} X $15</span></div>
  </div>`;
- document.getElementById(loc+'log').innerHTML=locationPayPeriodLog(loc);
+ const logEl=document.getElementById(loc+'log');if(logEl)logEl.innerHTML=locationPayPeriodLog(loc);
 }
 function locationPayPeriodLog(loc){
  const groups={};
@@ -603,11 +605,11 @@ async function backupData(){
  try{
    quarterStore.quarters[activeQuarter]=state;
    quarterStore.current=activeQuarter;
-   const payload={version:1,app:'Quarter Hours Tracker',created:new Date().toISOString(),data:quarterStore};
+   const payload={version:2,app:'Quarter Hours Tracker',created:new Date().toISOString(),registration:getRegistration(),data:quarterStore};
    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
    const url=URL.createObjectURL(blob);
-   const a=document.createElement('a');a.href=url;a.download='Quarter-Hours-Tracker-backup.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
- }catch(e){alert('Backup failed.');}
+   const a=document.createElement('a');a.href=url;a.download='Quarter-Hours-Tracker-backup.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }catch(e){console.error('Backup error:',e);alert('Backup failed: '+(e&&e.message?e.message:e));}
 }
 async function restoreData(){
  if(!(await auth()))return alert('Incorrect password. Restore was cancelled.');
@@ -619,43 +621,85 @@ function handleRestoreFile(event){
  if(!file)return;
  const reader=new FileReader();
  reader.onload=function(){
-   try{
-     let parsed=JSON.parse(String(reader.result||'').replace(/^\uFEFF/,''));
-     // Current backup format: {version, app, created, data:{current,quarters:{...}}}
-     let incoming=(parsed&&parsed.data!==undefined)?parsed.data:parsed;
-     if(typeof incoming==='string') incoming=JSON.parse(incoming);
-     if(!incoming||typeof incoming!=='object')throw new Error('Not an object');
-
-     // Accept the original working app backup format: {version, exportedAt, state:{...}}.
-     // That backup contains Quarter 3 data directly under "state".
-     if(!incoming.quarters && incoming.state && typeof incoming.state==='object'){
-       incoming={current:currentQuarterKey(),quarters:{q3_2026:incoming.state,q4_2026:blankState()}};
-     }
-
-     // Accept all tracker backup shapes used by previous versions.
-     // 1) {current, quarters:{q3:...,q4:...}}
-     // 2) {q3:...,q4:...,current:...}
-     // 3) a single raw tracker state {w17:...,w39:...,personal:...}
-     let qs=incoming.quarters;
-     if(!qs && (incoming.q3 || incoming.q4)) qs={q3:incoming.q3,q4:incoming.q4};
-     if(!qs && (incoming.w17 || incoming.w39 || incoming.personal)) qs={q3:incoming,q4:blankState()};
-     if(!qs||typeof qs!=='object')throw new Error('No tracker data found');
-
-     const restoredQ3=normalizeState(qs.q3||blankState());
-     const restoredQ4=normalizeState(qs.q4||blankState());
-     const current=(incoming.current==='q4')?'q4':'q3';
-
-     quarterStore={current,quarters:{q3:restoredQ3,q4:restoredQ4}};
-     activeQuarter=current;
-     state=quarterStore.quarters[activeQuarter];
-     persistQuarters();
-     populateQuarterUI();
-     render();
-     alert('Backup restored successfully.');
-   }catch(e){
-     console.error('Restore error:',e);
-     alert('That file is not a valid Quarter Hours Tracker backup. Please select the JSON file created by Backup Data.');
+  try{
+   const parsed=JSON.parse(String(reader.result||'').replace(/^\uFEFF/,''));
+   if(!parsed||typeof parsed!=='object')throw new Error('The JSON root is not an object.');
+   // Restore registration when the backup contains it; older backups may not.
+   const reg=parsed.registration || parsed.data?.registration || parsed.settings?.registration;
+   if(reg && reg.adminName && reg.adminPassword && Array.isArray(reg.locations) && reg.locations.length){
+     localStorage.setItem(REG_KEY,JSON.stringify(reg));
    }
+   let incoming=(parsed.data!==undefined)?parsed.data:parsed;
+   if(typeof incoming==='string')incoming=JSON.parse(incoming);
+   if(!incoming||typeof incoming!=='object')throw new Error('No tracker data object was found.');
+   // Old export format: {state:{w17,w39,personal,...}}.
+   if(!incoming.quarters && incoming.state && typeof incoming.state==='object'){
+     incoming={current:'q3_2026',quarters:{q3_2026:incoming.state,q4_2026:blankState()}};
+   }
+   let qs=incoming.quarters;
+   if(!qs && (incoming.q3 || incoming.q4)) qs={q3_2026:incoming.q3,q4_2026:incoming.q4};
+   if(!qs && (incoming.w17 || incoming.w39 || incoming.personal || incoming.locations)) qs={q3_2026:incoming};
+   if(!qs || typeof qs!=='object')throw new Error('No quarter data was found. This JSON may be a different export format.');
+   const fresh={};
+   Object.keys(QUARTERS).forEach(k=>{
+     const short=k==='q3_2026'?'q3':k==='q4_2026'?'q4':k;
+     let raw=qs[k] || qs[short] || null;
+     if(!raw){fresh[k]=blankState();return;}
+     const st=normalizeState(raw);
+     st.locations=st.locations||{};
+     st.adminHours=st.adminHours||{};
+     st.pto=st.pto||{};
+     // Bridge the older W17/W39 layout into the dynamic location-based layout.
+     if(!Array.isArray(st.locations.location_1))st.locations.location_1=Array.isArray(st.w17)?st.w17:[];
+     if(!Array.isArray(st.locations.location_2))st.locations.location_2=Array.isArray(st.w39)?st.w39:[];
+     if(!Array.isArray(st.pto.location_1))st.pto.location_1=Array.isArray(st.pto.w17)?st.pto.w17:[[],[]];
+     if(!Array.isArray(st.pto.location_2))st.pto.location_2=Array.isArray(st.pto.w39)?st.pto.w39:[[],[]];
+     if(!Array.isArray(st.adminHours.location_1))st.adminHours.location_1=[];
+     if(!Array.isArray(st.adminHours.location_2))st.adminHours.location_2=[];
+     st.w17=st.locations.location_1; st.w39=st.locations.location_2;
+     st.pto.w17=st.pto.location_1; st.pto.w39=st.pto.location_2;
+     fresh[k]=JSON.parse(JSON.stringify(st));
+   });
+   let current=String(incoming.current||parsed.current||'q3_2026');
+   if(current==='q3')current='q3_2026'; if(current==='q4')current='q4_2026';
+   if(!QUARTERS[current])current='q3_2026';
+   quarterStore={current,quarters:fresh};
+   activeQuarter=current;
+   state=quarterStore.quarters[activeQuarter]||blankState();
+   persistQuarters();
+   // Rebuild location panels after registration/data are restored.
+   if(registrationExists()){
+     hideRegistration();
+     // Build all dynamic tab/panel elements first. Some older restore flows
+     // called the static renderer after main had been replaced, causing a
+     // null.innerHTML exception despite valid JSON.
+     buildDynamicTabs();
+     buildDynamicPanels();
+     renderAdminEditor();
+     renderAdminLocationList();
+     activeQuarter=current;
+     state=quarterStore.quarters[activeQuarter]||blankState();
+     ensureDynamicState();
+     normalizeAdminPtoSlots();
+     populateDynamicPeriods();
+     renderDynamic();
+     const first=document.querySelector('.tabs button');
+     if(first)tab('loc_1',first);
+   }else{
+     populateQuarterUI();
+     // Registration is absent, so keep the setup screen visible instead of
+     // trying to render panels that have not been created.
+     showRegistration();
+   }
+   const qstate=quarterStore.quarters[current]||blankState();
+   const loc1=(qstate.locations&&qstate.locations.location_1)||qstate.w17||[];
+   const loc2=(qstate.locations&&qstate.locations.location_2)||qstate.w39||[];
+   const personal=qstate.personal||[];
+   alert('Backup restored. Active quarter: '+current+'\nW17/location 1 entries: '+loc1.length+'\nW39/location 2 entries: '+loc2.length+'\nPersonal entries: '+personal.length+'.');
+  }catch(e){
+   console.error('Restore error:',e);
+   alert('Could not restore this backup. Details: '+(e&&e.message?e.message:String(e)));
+  }
  };
  reader.onerror=function(){alert('The backup file could not be read.');};
  reader.readAsText(file);
@@ -671,7 +715,21 @@ function render(){renderLoc('w17');renderLoc('w39');let pt=total(state.personal)
  ...state.pto.w39[0].map(e=>({...e,location:'W39',category:'PTO — Daily Roberts',type:'PTO'})),
  ...state.pto.w39[1].map(e=>({...e,location:'W39',category:'PTO — Amari Jordan',type:'PTO'}))
 ].sort((a,b)=>new Date(b.date)-new Date(a.date));
-document.getElementById('allLog').innerHTML=allLogTable(all)}
+const allLogEl=document.getElementById('allLog');if(allLogEl)allLogEl.innerHTML=allLogTable(all)}
+// TEST-ONLY BYPASS: avoid the first-run registration screen so restore can be tested directly.
+// A backup that contains registration settings will replace these defaults during restore.
+if(!registrationExists()){
+  try {
+    localStorage.setItem(REG_KEY, JSON.stringify({
+      adminName:'Daily Roberts', adminPassword:'4187', personalQuarterHours:585,
+      locations:[
+        {name:'W17', employees:['Ray Young']},
+        {name:'W39', employees:['Amari Jordan']}
+      ]
+    }));
+  } catch(e) {}
+}
+
 if(!registrationExists()){
   // First-run setup must happen before any of the old tracker renderer runs.
   // The legacy renderer can throw before the registration fields are built.
@@ -898,7 +956,7 @@ function saveAdminProfile(){
   }
 }
 function addAdminEditEmployee(button){
-  const list=button.closest('.admin-edit-location').querySelector('.adminEmployees');
+  const list=button && button.classList && button.classList.contains('adminEmployees') ? button : button.closest('.admin-edit-location').querySelector('.adminEmployees');
   const row=document.createElement('div');
   row.className='admin-edit-employee';
   row.style.display='grid';
@@ -906,7 +964,9 @@ function addAdminEditEmployee(button){
   row.style.gap='7px';
   row.style.marginTop='7px';
   row.innerHTML='<input class="adminEmpName" type="text" placeholder="Employee / Assistant name" autocomplete="off"><button type="button" class="danger">Remove</button>';
-  row.querySelector('button').onclick=()=>row.remove();
+  row.querySelector('button').onclick=()=>{row.remove();};
+  const input=row.querySelector('input');
+  input.addEventListener('input',()=>{const rows=[...list.querySelectorAll('.admin-edit-employee')];if(input.value.trim() && rows[rows.length-1]===row) addAdminEditEmployee(list);});
   list.appendChild(row);
 }
 
@@ -1028,10 +1088,10 @@ function addAdminEditLocation(){
     <input class="adminLocName" type="text" placeholder="Example: W22" autocomplete="off">
     <div class="admin-location-limits" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px"><div><label>Hours Allowed / Week</label><input class="adminWeeklyLimit" type="number" min="0" step="any" value="75"></div><div><label>Hours Allowed / Biweekly</label><input class="adminBiweeklyLimit" type="number" min="0" step="any" value="150"></div><div><label>Hours Allowed / Quarter</label><input class="adminQuarterlyLimit" type="number" min="0" step="any" value="975"></div></div>
     <label>Assistant Names (PTO employees)</label>
-    <div class="adminEmployees"></div>
-    <button type="button" class="secondary add-admin-employee">+ Add Employee / Assistant</button>`;
-  box.querySelector('.add-admin-employee').addEventListener('click',function(){addAdminEditEmployee(this);});
+    <div class="adminEmployees"></div>`;
   host.appendChild(box);
+  // Match registration: start with a direct text input and add another input as names are entered.
+  addAdminEditEmployee(box.querySelector('.adminEmployees'));
   box.querySelector('.adminLocName').focus();
 }
 
@@ -1158,3 +1218,6 @@ async function clearDynamicPayPeriod(location,period){
 if(registrationExists()){initializeDynamicTracker();}
 
 </script></body></html>
+<script>/* TEMPORARY TEST MODE: keep registration hidden so backup restore can be tested. */
+(function(){var el=document.getElementById("registerScreen");if(el){el.style.setProperty("display","none","important");el.style.setProperty("visibility","hidden","important");el.style.setProperty("pointer-events","none","important");}document.body.style.overflow="";})();
+</script>
