@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Quarter Hours Tracker v2.0</title>
+<title>Quarter Hours Tracker v2.0 — Registration Test Preview</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#eef2f6;color:#18212b;font-family:Arial,sans-serif}
 header{position:relative;background:linear-gradient(135deg,#17212b,#31556f);color:white;text-align:center;padding:25px 15px}
@@ -24,11 +24,28 @@ button{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:point
 .register-screen input,.register-screen select,.register-screen button{position:relative;z-index:20002;pointer-events:auto}
 .register-screen .register-box{position:relative;z-index:20001}
 <style>
-#registerScreen{display:none!important;visibility:hidden!important;pointer-events:none!important}
 #registrationLocations{display:block!important;visibility:visible!important}
 #registrationLocations .reg-location{display:block!important;visibility:visible!important}
 #registrationLocations input{pointer-events:auto!important;user-select:text!important;-webkit-user-select:text!important}
-</style></style></head><body><div id="registerScreen" class="register-screen" style="display:none"><div class="register-box"><h1>Register Admin</h1><p class="sub">First-time setup for this phone. Register the administrator before using the tracker.</p><div class="card"><label>Administrator Name</label><input id="regAdminName" type="text" autocomplete="name" placeholder="Enter administrator name"><div class="reg-grid" style="margin-top:12px"><div><label>Create Admin Password</label><input id="regAdminPassword" type="password" inputmode="numeric" maxlength="20" placeholder="Create a password"></div><div><label>Confirm Admin Password</label><input id="regAdminPassword2" type="password" inputmode="numeric" maxlength="20" placeholder="Confirm password"></div></div></div><div class="card"><label>Personal Hours Allowed Per Quarter</label><input id="regPersonalQuarterHours" type="number" min="0" step="any" value="585" placeholder="Example: 585"><small>Used for the Personal tab quarter target. Entries are still allowed above the target.</small></div><div class="card"><label>Number of Locations</label><select id="regLocationCount" onchange="renderRegistrationLocations()" oninput="renderRegistrationLocations()"><option value="1">1 Location</option><option value="2">2 Locations</option><option value="3">3 Locations</option><option value="4">4 Locations</option><option value="5">5 Locations</option><option value="6">6 Locations</option><option value="7">7 Locations</option><option value="8">8 Locations</option><option value="9">9 Locations</option><option value="10">10 Locations</option></select></div><div id="registrationLocations"><div class="reg-location"><h3>Location 1</h3><label>Location Number / Name</label><input class="regLocName" type="text" placeholder="Example: W22" autocomplete="off"><label>Employees / Assistants allowed for PTO</label><div class="regEmployees"><div class="reg-employee-row"><input class="regEmpName" type="text" placeholder="Employee / Assistant name" autocomplete="off"><button type="button" class="danger remove-reg-employee">Remove</button></div></div><button type="button" class="secondary add-reg-employee" style="margin-top:8px">+ Add Employee / Assistant</button></div></div><button class="primary full" onclick="completeRegistration()">Register Admin &amp; Add Assistants</button><button type="button" class="danger full" onclick="resetV2TestData()" style="margin-top:8px">Reset v2.0 Test Data</button></div></div>
+</style></style></head><body><div id="registerScreen" class="register-screen" style="display:none"><div class="register-box"><h1>Register Admin</h1><p class="sub">First-time setup for this phone. Register the administrator before using the tracker.</p><div class="card"><label>Administrator Name</label><input id="regAdminName" type="text" autocomplete="name" placeholder="Enter administrator name"><div class="reg-grid" style="margin-top:12px"><div><label>Create Admin Password</label><input id="regAdminPassword" type="password" inputmode="numeric" maxlength="20" placeholder="Create a password"></div><div><label>Confirm Admin Password</label><input id="regAdminPassword2" type="password" inputmode="numeric" maxlength="20" placeholder="Confirm password"></div></div></div><div class="card"><label>Personal Hours Allowed Per Quarter</label><input id="regPersonalQuarterHours" type="number" min="0" step="any" value="585" placeholder="Example: 585"><small>Used for the Personal tab quarter target. Entries are still allowed above the target.</small></div><div class="card"><label>Number of Locations</label><select id="regLocationCount" onchange="renderRegistrationLocations()" oninput="renderRegistrationLocations()"><option value="1">1 Location</option><option value="2">2 Locations</option><option value="3">3 Locations</option><option value="4">4 Locations</option><option value="5">5 Locations</option><option value="6">6 Locations</option><option value="7">7 Locations</option><option value="8">8 Locations</option><option value="9">9 Locations</option><option value="10">10 Locations</option></select></div><div id="registrationLocations"><div class="reg-location"><h3>Location 1</h3><label>Location Number / Name</label><input class="regLocName" type="text" placeholder="Example: W22" autocomplete="off"><label>Employees / Assistants allowed for PTO</label><div class="regEmployees"><div class="reg-employee-row"><input class="regEmpName" type="text" placeholder="Employee / Assistant name" autocomplete="off"><button type="button" class="danger remove-reg-employee">Remove</button></div></div><button type="button" class="secondary add-reg-employee" style="margin-top:8px">+ Add Employee / Assistant</button></div></div><button class="primary full" onclick="completeRegistration()">Register Admin &amp; Add Assistants</button></div></div>
+<script>
+// EARLY FIRST-RUN GUARD: reveal registration before the tracker scripts initialize.
+(function(){
+  var screen=document.getElementById('registerScreen');
+  var hasRegistration=false;
+  try {
+    var r=JSON.parse(localStorage.getItem('QuarterHoursTracker_registration_v1')||'null');
+    hasRegistration=!!(r&&r.adminName&&r.adminPassword&&Array.isArray(r.locations)&&r.locations.length);
+  } catch(e) { hasRegistration=false; }
+  // TEST PREVIEW ONLY: force the registration screen open so it can be checked
+  // in a browser that already has saved registration. Do NOT upload this test
+  // copy as the live production index; production should use the first-run check.
+  if(screen){
+    screen.style.display='flex';
+    document.body.style.overflow='hidden';
+  }
+})();
+</script>
 <header><small style="position:absolute;right:12px;bottom:8px;font-size:10px;font-weight:400;opacity:.85;">Brought to you by Switch-designs</small><h1>Quarter Hours Tracker <small style="font-size:.45em;font-weight:600;opacity:.8;">v2.0</small></h1><p id="quarterLabel">Quarter 3: July 4, 2026 – October 2, 2026</p></header>
 <div class="card" style="max-width:940px;margin:14px auto 0;padding:12px 20px">
 <label>Quarter</label>
@@ -716,20 +733,6 @@ function render(){renderLoc('w17');renderLoc('w39');let pt=total(state.personal)
  ...state.pto.w39[1].map(e=>({...e,location:'W39',category:'PTO — Amari Jordan',type:'PTO'}))
 ].sort((a,b)=>new Date(b.date)-new Date(a.date));
 const allLogEl=document.getElementById('allLog');if(allLogEl)allLogEl.innerHTML=allLogTable(all)}
-// TEST-ONLY BYPASS: avoid the first-run registration screen so restore can be tested directly.
-// A backup that contains registration settings will replace these defaults during restore.
-if(!registrationExists()){
-  try {
-    localStorage.setItem(REG_KEY, JSON.stringify({
-      adminName:'Daily Roberts', adminPassword:'4187', personalQuarterHours:585,
-      locations:[
-        {name:'W17', employees:['Ray Young']},
-        {name:'W39', employees:['Amari Jordan']}
-      ]
-    }));
-  } catch(e) {}
-}
-
 if(!registrationExists()){
   // First-run setup must happen before any of the old tracker renderer runs.
   // The legacy renderer can throw before the registration fields are built.
@@ -1218,6 +1221,4 @@ async function clearDynamicPayPeriod(location,period){
 if(registrationExists()){initializeDynamicTracker();}
 
 </script></body></html>
-<script>/* TEMPORARY TEST MODE: keep registration hidden so backup restore can be tested. */
-(function(){var el=document.getElementById("registerScreen");if(el){el.style.setProperty("display","none","important");el.style.setProperty("visibility","hidden","important");el.style.setProperty("pointer-events","none","important");}document.body.style.overflow="";})();
-</script>
+
