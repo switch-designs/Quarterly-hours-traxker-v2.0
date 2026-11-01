@@ -1169,6 +1169,9 @@ async function clearEntryDynamic(kind,k,id){
  if(!(await auth()))return alert('Incorrect password. Entry was not cleared.');
  if(kind==='personalPTO'){
    state.personalPTO=(state.personalPTO||[]).filter(e=>e.id!==id);
+ }else if(kind==='regular' && k==='personal'){
+   // Personal regular hours are stored in state.personal, not state.locations.
+   state.personal=(state.personal||[]).filter(e=>e.id!==id);
  }else if(kind==='regular'){
    state.locations[k]=(state.locations[k]||[]).filter(e=>e.id!==id);
    // Keep legacy aliases from restoring a cleared dynamic entry.
