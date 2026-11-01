@@ -1152,8 +1152,16 @@ function renderDynamic(){
   const log=document.getElementById(id+'log');if(log)log.innerHTML=locationCombinedLog(k,i);
  });
  const pt=total(state.personal||[]),pp=total(state.personalPTO||[]),counted=pt+pp,r=readLimitValue(getRegistration()?.personalQuarterHours,585)-counted;const ps=document.getElementById('personalStats');if(ps)ps.innerHTML=`<div class="stats"><div class="stat">Regular input<b>${fmt(pt)}</b></div><div class="stat">PTO<b>${fmt(pp)}</b></div><div class="stat">Hours counted after PTO<b>${fmt(counted)}</b></div><div class="stat">Hours remaining<b>${fmt(r)}</b></div></div>`;
- const pl=document.getElementById('personalLog');if(pl)pl.innerHTML=tableDynamic(state.personal||[],'personal')+(state.personalPTO&&state.personalPTO.length?'<table><tr><th colspan="4">Personal PTO</th></tr>'+state.personalPTO.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.period)}</td><td>${fmt(e.hours)}</td><td><button class="danger" onclick="clearEntryDynamic('personalPTO','personal','${e.id}')">Clear</button></td></tr>`).join('')+'</table>':'');
+ const pl=document.getElementById('personalLog');if(pl)pl.innerHTML=personalCombinedLog();
  const all=[];regLocs().forEach((loc,i)=>{const k=locKey(i);(state.locations[k]||[]).forEach(e=>all.push({...e,location:loc.name,category:'Regular Hours',type:'Regular'}));(state.adminHours[k]||[]).forEach(e=>all.push({...e,location:loc.name,category:'Administrator — '+(getRegistration()?.adminName||'Administrator'),type:'Administrator Hours'}));(state.pto[k]||[]).forEach((a,j)=>(a||[]).forEach(e=>all.push({...e,location:loc.name,category:'PTO — '+(ptoPeopleForLocation(loc)[j]||'Employee'),type:'PTO'})));});(state.personal||[]).forEach(e=>all.push({...e,location:'Personal',category:'Personal Hours',type:'Regular'}));(state.personalPTO||[]).forEach(e=>all.push({...e,location:'Personal',category:'PTO — Personal',type:'PTO'}));all.sort((a,b)=>new Date(b.date)-new Date(a.date));const al=document.getElementById('allLog');if(al)al.innerHTML=allLogTableDynamic(all);
+}
+function personalCombinedLog(){
+ const rows={};
+ (state.personal||[]).forEach(e=>{const key=String(e.period||'');if(!rows[key])rows[key]={period:key,date:e.date,regular:0,pto:0};rows[key].regular+=Number(e.hours)||0;if(!rows[key].date||new Date(e.date)>new Date(rows[key].date))rows[key].date=e.date;});
+ (state.personalPTO||[]).forEach(e=>{const key=String(e.period||'');if(!rows[key])rows[key]={period:key,date:e.date,regular:0,pto:0};rows[key].pto+=Number(e.hours)||0;if(!rows[key].date||new Date(e.date)>new Date(rows[key].date))rows[key].date=e.date;});
+ const list=Object.values(rows).sort((a,b)=>new Date(b.date)-new Date(a.date));
+ if(!list.length)return '<div class="notice">No saved entries yet.</div>';
+ return '<table><tr><th>Date</th><th>Period</th><th>Hours / PTO</th><th>Action</th></tr>'+list.map(g=>`<tr><td>${esc(g.date)}</td><td><strong>Personal</strong><br>${esc(g.period)}</td><td>${fmt(g.regular)}${g.pto?' + PTO '+fmt(g.pto):''}<br><strong>Counted: ${fmt(g.regular+g.pto)}</strong></td><td><button class="danger" onclick='clearDynamicPayPeriod("Personal",${JSON.stringify(g.period)})'>Clear</button></td></tr>`).join('')+'</table>';
 }
 function tableDynamic(a,k){return '<table><tr><th>Date</th><th>Period</th><th>Hours</th><th>Action</th></tr>'+a.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.period)}</td><td>${fmt(e.hours)}</td><td><button class="danger" onclick="clearEntryDynamic('regular','${k}','${e.id}')">Clear</button></td></tr>`).join('')+'</table>';}
 function locationCombinedLog(k,i){
